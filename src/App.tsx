@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { AssessmentProvider } from "@/contexts/AssessmentContext";
+import ThemeProvider from "@/components/theme/ThemeProvider";
+import Footer from "@/components/Footer";
 import Navigation from "./components/Navigation";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import OfflineIndicator from "./components/OfflineIndicator";
@@ -54,9 +56,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navigation />
-      {children}
+      <main className="flex-1 pt-16">{children}</main>
+      <Footer />
     </div>
   );
 };
@@ -114,6 +117,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -212,6 +216,7 @@ const App = () => {
           </BrowserRouter>
         </AssessmentProvider>
       </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };

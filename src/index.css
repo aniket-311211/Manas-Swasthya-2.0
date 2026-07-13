@@ -1,434 +1,249 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Force override cached calendar styles */
-.journal-calendar-container {
-  background: linear-gradient(
-    135deg,
-    rgba(249, 245, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.9) 50%,
-    rgba(243, 232, 255, 0.3) 100%
-  ) !important;
-  border-radius: 1.5rem !important;
-  padding: 1.5rem !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-  border: 1px solid rgba(196, 181, 253, 0.2) !important;
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-}
-
-/* Force purple theme for journal calendar */
-.journal-calendar-container .calendar-header {
-  background: linear-gradient(
-    90deg,
-    rgba(139, 92, 246, 0.05) 0%,
-    rgba(124, 58, 237, 0.05) 100%
-  ) !important;
-  border-radius: 1rem !important;
-  padding: 0.75rem !important;
-  border: 1px solid rgba(196, 181, 253, 0.3) !important;
-}
-
-.journal-calendar-container .calendar-day-header {
-  background: linear-gradient(
-    180deg,
-    rgba(196, 181, 253, 0.4) 0%,
-    rgba(221, 214, 254, 0.2) 100%
-  ) !important;
-  border-radius: 0.75rem !important;
-  border: 1px solid rgba(196, 181, 253, 0.3) !important;
-  color: rgba(91, 33, 182, 0.7) !important;
-}
-
-.journal-calendar-container .calendar-day-cell {
-  height: 4rem !important;
-  border-radius: 0.75rem !important;
-  transition: all 0.3s ease !important;
-}
-
-/* Clear any conflicting UI calendar styles */
-.journal-calendar-container *:not(.react-day-picker) {
-  box-sizing: border-box !important;
-}
-
-/* Ensure journal calendar takes precedence over UI calendar */
-.journal-calendar-container {
-  z-index: 10 !important;
-  position: relative !important;
-}
-
-/* Enhanced journal calendar styling to prevent conflicts */
-.journal-calendar-container .calendar-cell-content {
-  position: relative !important;
-  width: 100% !important;
-  height: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* Global LTR text direction fixes for journal editor */
-.journal-text-fix {
-  direction: ltr !important;
-  text-align: left !important;
-  unicode-bidi: normal !important;
-  writing-mode: horizontal-tb !important;
-}
-
-/* Force LTR for all text inputs in journal components */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
-textarea,
-[contenteditable] {
-  direction: ltr !important;
-  text-align: left !important;
-  unicode-bidi: normal !important;
-}
-
-/* Specific fixes for contentEditable elements */
-[contenteditable] {
-  direction: ltr !important;
-  text-align: left !important;
-  unicode-bidi: normal !important;
-  writing-mode: horizontal-tb !important;
-}
-
-[contenteditable] *,
-[contenteditable] p,
-[contenteditable] div,
-[contenteditable] span,
-[contenteditable] strong,
-[contenteditable] em,
-[contenteditable] u {
-  direction: ltr !important;
-  unicode-bidi: normal !important;
-}
-
-/* Fix cursor behavior in RTL-affected environments */
-[contenteditable]:focus {
-  direction: ltr !important;
-  text-align: left !important;
-}
-
-/* Prevent RTL inheritance */
-.journal-container {
-  direction: ltr !important;
-  text-align: left !important;
-}
-
-.journal-container * {
-  direction: ltr !important;
-  unicode-bidi: normal !important;
-}
-
-/* Enhanced styles for the new simplified text editor */
-.journal-textarea {
-  direction: ltr !important;
-  text-align: left !important;
-  unicode-bidi: normal !important;
-  writing-mode: horizontal-tb !important;
-  font-feature-settings: "liga" 1, "kern" 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.journal-textarea:focus {
-  direction: ltr !important;
-  text-align: left !important;
-}
-
-/* Smooth animations for journal interface */
-.journal-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Custom scrollbar for journal text areas */
-.journal-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.journal-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 3px;
-}
-
-.journal-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-}
-
-.journal-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* PWA Animations */
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-
-/* PWA Install Prompt Styles */
-.pwa-install-prompt {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Offline Indicator */
-.offline-indicator {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #f59e0b;
-  color: white;
-  text-align: center;
-  padding: 8px;
-  font-size: 14px;
-  z-index: 9999;
-  transform: translateY(-100%);
-  transition: transform 0.3s ease;
-}
-
-.offline-indicator.show {
-  transform: translateY(0);
-}
-
-/* PWA-specific styles for mental health app */
-.pwa-safe-area {
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-
-/* Ensure proper spacing on mobile devices */
-@media (display-mode: standalone) {
-  body {
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-  }
-
-  /* Hide address bar space on iOS */
-  .pwa-container {
-    height: 100vh;
-    height: -webkit-fill-available;
-  }
-}
-
-/* Manas Svasthya Design System - Therapeutic & Calming */
-
 @layer base {
   :root {
-    /* Core therapeutic palette */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 20%;
+    /* ManasSwasthya calm-premium palette (light / cream) */
+    --background: 42 42% 94%;
+    --foreground: 222 16% 22%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 20%;
+    --card-foreground: 222 16% 22%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 20%;
+    --popover-foreground: 222 16% 22%;
 
-    /* Primary - Calming teal */
-    --primary: 170 60% 45%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 170 60% 65%;
-    --primary-dark: 170 70% 35%;
+    --primary: 136 12% 43%;
+    --primary-foreground: 42 42% 96%;
+    --primary-light: 134 13% 55%;
+    --primary-dark: 137 14% 34%;
 
-    /* Secondary - Warm sage */
-    --secondary: 140 25% 88%;
-    --secondary-foreground: 215 25% 20%;
+    --secondary: 259 28% 92%;
+    --secondary-foreground: 259 24% 32%;
 
-    /* Muted - Soft neutrals */
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 42 30% 88%;
+    --muted-foreground: 40 9% 49%;
 
-    /* Accent - Gentle purple for highlights */
-    --accent: 250 35% 85%;
-    --accent-foreground: 250 40% 25%;
+    --accent: 259 28% 69%;
+    --accent-foreground: 259 30% 20%;
 
-    /* Therapeutic accent colors */
-    --therapeutic-blue: 200 50% 60%;
-    --therapeutic-green: 140 45% 55%;
-    --therapeutic-purple: 260 35% 65%;
-    --therapeutic-warm: 25 60% 75%;
-
-    /* Status colors */
-    --success: 140 50% 50%;
-    --success-foreground: 0 0% 100%;
-    --warning: 35 85% 55%;
-    --warning-foreground: 0 0% 100%;
-    --destructive: 0 70% 55%;
+    --destructive: 0 62% 52%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 90%;
-    --input: 210 15% 92%;
-    --ring: 170 60% 45%;
+    --success: 136 30% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 25 70% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    --border: 42 26% 82%;
+    --input: 42 26% 82%;
+    --ring: 136 12% 43%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(
-      135deg,
-      hsl(var(--primary)),
-      hsl(var(--primary-light))
-    );
-    --gradient-calm: linear-gradient(
-      180deg,
-      hsl(var(--background)),
-      hsl(var(--secondary))
-    );
-    --gradient-hero: linear-gradient(
-      135deg,
-      hsl(var(--therapeutic-blue)),
-      hsl(var(--therapeutic-purple))
-    );
+    --radius: 1rem;
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -2px hsl(var(--primary) / 0.1);
-    --shadow-card: 0 8px 32px -4px hsl(215 25% 20% / 0.08);
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.15);
+    /* Brand tokens */
+    --sage: 134 13% 55%;
+    --sage-deep: 136 12% 43%;
+    --lavender: 259 28% 69%;
+    --clay: 25 52% 69%;
+    --canvas-deep: 42 38% 90%;
 
-    /* Animation */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-gentle: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --glass: rgba(255, 255, 255, 0.62);
+    --glass-border: rgba(224, 217, 200, 0.8);
+    --shadow-soft: 0 8px 30px -8px rgba(62, 74, 64, 0.14);
+    --shadow-lift: 0 18px 40px -12px rgba(62, 74, 64, 0.25);
 
-    --sidebar-background: 0 0% 98%;
+    --font-display: 'Fraunces Variable', Georgia, serif;
+    --font-body: 'Inter Variable', system-ui, -apple-system, sans-serif;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Therapeutic legacy aliases */
+    --therapeutic-blue: 200 40% 60%;
+    --therapeutic-green: 134 13% 55%;
+    --therapeutic-purple: 259 28% 69%;
+    --therapeutic-warm: 25 52% 69%;
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 42 42% 96%;
+    --sidebar-foreground: 222 16% 22%;
+    --sidebar-primary: 136 12% 43%;
+    --sidebar-primary-foreground: 42 42% 96%;
+    --sidebar-accent: 42 30% 88%;
+    --sidebar-accent-foreground: 222 16% 22%;
+    --sidebar-border: 42 26% 82%;
+    --sidebar-ring: 136 12% 43%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Deep forest slate (aurora) */
+    --background: 160 13% 9%;
+    --foreground: 42 42% 94%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 160 10% 13%;
+    --card-foreground: 42 42% 94%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 160 10% 13%;
+    --popover-foreground: 42 42% 94%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 136 21% 68%;
+    --primary-foreground: 160 13% 9%;
+    --primary-light: 135 22% 76%;
+    --primary-dark: 134 13% 55%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 259 18% 24%;
+    --secondary-foreground: 259 30% 88%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 160 8% 17%;
+    --muted-foreground: 42 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 259 32% 78%;
+    --accent-foreground: 160 13% 9%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --success: 136 25% 60%;
+    --success-foreground: 160 13% 9%;
+    --warning: 25 60% 62%;
+    --warning-foreground: 160 13% 9%;
+
+    --border: 160 8% 22%;
+    --input: 160 8% 22%;
+    --ring: 136 21% 68%;
+
+    --sage: 136 21% 68%;
+    --sage-deep: 134 13% 55%;
+    --lavender: 259 32% 83%;
+    --clay: 27 53% 81%;
+    --canvas-deep: 160 13% 7%;
+
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-border: rgba(255, 255, 255, 0.13);
+    --shadow-soft: 0 8px 30px -8px rgba(0, 0, 0, 0.5);
+    --shadow-lift: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+
+    --sidebar-background: 160 13% 11%;
+    --sidebar-foreground: 42 42% 94%;
+    --sidebar-primary: 136 21% 68%;
+    --sidebar-primary-foreground: 160 13% 9%;
+    --sidebar-accent: 160 8% 17%;
+    --sidebar-accent-foreground: 42 42% 94%;
+    --sidebar-border: 160 8% 22%;
+    --sidebar-ring: 136 21% 68%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
+  html {
+    scroll-behavior: smooth;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-semibold tracking-tight;
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 }
 
 @layer components {
-  /* Therapeutic UI Components */
-  .mindwell-card {
-    @apply bg-card rounded-2xl border-0 shadow-[var(--shadow-card)] transition-[var(--transition-smooth)];
+  .glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-soft);
   }
 
-  .mindwell-button {
-    @apply inline-flex items-center justify-center rounded-xl font-medium transition-[var(--transition-smooth)] 
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
-           disabled:pointer-events-none disabled:opacity-50;
+  .glass-card-hover {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
   }
 
-  .mindwell-input {
-    @apply flex w-full rounded-xl border border-input bg-background px-4 py-3
-           text-sm transition-[var(--transition-smooth)] placeholder:text-muted-foreground
-           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  .glass-card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, hsl(var(--sage)), hsl(var(--lavender)), hsl(var(--clay)), hsl(var(--sage)));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 6s linear infinite;
+  }
+
+  .pill-button {
+    border-radius: 999px;
+    padding: 0.7rem 1.6rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  }
+
+  .pill-button:hover {
+    transform: translateY(-2px);
+  }
+
+  .pill-button:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Legacy compatibility, retuned to new tokens */
+  .gradient-calm {
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(var(--canvas-deep)));
   }
 
   .gradient-hero {
-    background: var(--gradient-hero);
+    background:
+      radial-gradient(ellipse 70% 90% at 25% 10%, hsl(var(--lavender) / 0.28), transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, hsl(var(--sage) / 0.25), transparent 60%),
+      hsl(var(--background));
   }
 
-  .gradient-calm {
-    background: var(--gradient-calm);
+  .mindwell-card {
+    @apply glass-card p-6;
+  }
+
+  .mindwell-input {
+    @apply w-full rounded-xl border border-input bg-card px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40;
   }
 
   .shadow-therapeutic {
     box-shadow: var(--shadow-soft);
   }
 
-  .animate-gentle-bounce {
-    animation: gentleBounce 2s ease-in-out infinite;
+  .journal-container {
+    @apply glass-card p-6;
   }
 
-  .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+  .journal-text-fix {
+    color: hsl(var(--foreground));
+  }
+
+  .journal-calendar-container {
+    @apply glass-card p-4;
+  }
+
+  .journal-calendar-container .calendar-day-cell {
+    height: 4rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .offline-indicator {
+    @apply fixed top-0 left-0 right-0 z-50 bg-warning text-warning-foreground text-center text-sm py-1;
   }
 }
 
@@ -436,25 +251,59 @@ textarea,
   .text-balance {
     text-wrap: balance;
   }
+
+  .animate-fade-in {
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-slide-up {
+    animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-gentle-bounce {
+    animation: floaty 4s ease-in-out infinite;
+  }
 }
 
-@keyframes gentleBounce {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -25px) scale(1.15); }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0px);
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-35px, 20px) scale(0.95); }
+}
+
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(25px, 30px) scale(1.2); }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
