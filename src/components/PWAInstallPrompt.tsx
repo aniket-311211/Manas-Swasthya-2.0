@@ -24,7 +24,7 @@ const PWAInstallPrompt: React.FC = () => {
       }
       
       // Check for iOS Safari
-      if ((window.navigator as any).standalone === true) {
+      if ((window.navigator as unknown as { standalone?: boolean }).standalone === true) {
         setIsInstalled(true);
         return;
       }

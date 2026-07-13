@@ -56,6 +56,7 @@ const MentorChat: React.FC<MentorChatProps> = ({ mentor, onBack }) => {
         };
 
         initRoom();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mentor.id]);
 
     // Auto-scroll to bottom

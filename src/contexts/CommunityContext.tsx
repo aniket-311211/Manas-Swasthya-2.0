@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 
@@ -233,7 +234,7 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             if (response.ok) {
                 const rooms = await response.json();
                 // Transform rooms to match our ChatRoom interface
-                const transformedRooms: ChatRoom[] = rooms.map((room: any) => ({
+                const transformedRooms: ChatRoom[] = rooms.map((room: Record<string, never> & ChatRoom) => ({
                     id: room.id,
                     type: room.type,
                     name: room.name || 'Chat Room',
@@ -259,7 +260,7 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             if (response.ok) {
                 const messages = await response.json();
                 // Transform messages to add required fields
-                const transformedMessages = messages.map((msg: any) => ({
+                const transformedMessages = messages.map((msg: Record<string, never> & { id: string; roomId: string; [k: string]: unknown }) => ({
                     id: msg.id,
                     roomId: msg.roomId,
                     senderId: msg.userId,

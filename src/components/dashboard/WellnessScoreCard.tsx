@@ -2,11 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import GlassCard from '@/components/visual/GlassCard';
 import { api } from '@/lib/api';
-import type { Assessment } from '@/types/api';
+import { wellnessScore } from '@/lib/wellness';
 
-export function wellnessScore(a: Assessment): number {
-  return Math.round((100 - a.stress + (100 - a.anxiety) + a.sleep) / 3);
-}
+
 
 export default function WellnessScoreCard({ clerkId }: { clerkId: string }) {
   const navigate = useNavigate();

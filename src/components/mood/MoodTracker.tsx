@@ -36,7 +36,7 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({ userId }) => {
         try {
           const entries = await api.getMoodHistory(userId);
           if (Array.isArray(entries)) {
-            setMoodEntries(entries.map((e: any) => ({
+            setMoodEntries(entries.map((e) => ({
               id: e.id,
               date: new Date(e.createdAt).toISOString().split('T')[0], // Approximation if date not stored explicitly
               mood: e.mood,
@@ -57,7 +57,7 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({ userId }) => {
         try {
           const entries = JSON.parse(stored);
           setMoodEntries(
-            entries.map((entry: any) => ({
+            entries.map((entry: { timestamp: string | Date } & Record<string, unknown>) => ({
               ...entry,
               timestamp: new Date(entry.timestamp),
             }))

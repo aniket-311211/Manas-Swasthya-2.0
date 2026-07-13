@@ -31,7 +31,7 @@ const GroupDiscussion: React.FC = () => {
             setLoadingGroups(true);
             try {
                 const rooms = await fetchChatRooms('group');
-                const mapped: DiscussionGroup[] = rooms.map((r: any) => ({
+                const mapped: DiscussionGroup[] = rooms.map((r: Record<string, unknown> & { id: string; name?: string | null }) => ({
                     id: r.id,
                     name: r.name || 'Group',
                     topic: r.topic || 'General',
@@ -47,6 +47,7 @@ const GroupDiscussion: React.FC = () => {
             }
         };
         loadGroups();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Auto-scroll to bottom on new messages

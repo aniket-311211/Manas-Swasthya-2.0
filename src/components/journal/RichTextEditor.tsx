@@ -202,10 +202,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           fontFamily:
             template === "cute" ? "Quicksand, sans-serif" : "Inter, sans-serif",
           lineHeight: "1.6",
-          direction: "ltr !important" as any,
+          direction: "ltr" as const,
           textAlign: "left" as const,
-          unicodeBidi: "normal" as any,
-          writingMode: "horizontal-tb" as any,
+          unicodeBidi: "normal" as const,
+          writingMode: "horizontal-tb" as const,
         }}
         dangerouslySetInnerHTML={{ __html: value }}
         data-placeholder={placeholder}

@@ -14,6 +14,20 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom"],
+          "vendor-clerk": ["@clerk/clerk-react"],
+          "vendor-charts": ["recharts"],
+          "vendor-motion": ["framer-motion", "motion"],
+          "vendor-pdf": ["jspdf"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
   optimizeDeps: {
     include: [
       "react",
