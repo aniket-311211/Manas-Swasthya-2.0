@@ -8,7 +8,8 @@ import SimpleTextEditor from "./SimpleTextEditor";
 import ImageUpload from "./ImageUpload";
 import VoiceRecorder from "./VoiceRecorder";
 import StickerPalette from "./StickerPalette";
-import { geminiService } from "@/lib/gemini";
+import { aiAnalyze } from "@/lib/ai";
+import { useUser } from "@clerk/clerk-react";
 
 interface JournalEditorProps {
   entry?: JournalEntry;
@@ -23,6 +24,7 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
   onSave,
   onCancel,
 }) => {
+  const { user } = useUser();
   const [template, setTemplate] = useState<"cute" | "cool">(
     entry?.template_type || "cute"
   );
@@ -61,32 +63,20 @@ const JournalEditor: React.FC<JournalEditorProps> = ({
 
     setIsAnalyzing(true);
     try {
-      const prompt = `Analyze the emotional tone of this journal entry and provide a mood summary. Return a JSON response with this exact structure:
-      {
-        "primary_mood": "happy|sad|anxious|calm|excited|neutral",
-        "confidence": 0.85,
-        "emotions": [
-          {"emotion": "joy", "score": 0.7},
-          {"emotion": "contentment", "score": 0.5}
-        ],
-        "insights": "Brief encouraging insight about the emotional state"
-      }
-
-      Journal text: "${text.replace(/"/g, '\\"')}"`;
-
-      const response = await geminiService.sendMessage(prompt);
-
-      // Try to extract JSON from response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const moodData = JSON.parse(jsonMatch[0]);
-        return {
-          ...moodData,
-          generated_at: new Date(),
-        };
-      }
-
-      return null;
+      const result = await aiAnalyze(user?.id ?? "anonymous", text, "journal");
+      const sentimentToMood: Record<string, string> = {
+        positive: "happy",
+        neutral: "neutral",
+        mixed: "anxious",
+        negative: "sad",
+      };
+      return {
+        primary_mood: sentimentToMood[result.sentiment] ?? "neutral",
+        confidence: 0.8,
+        emotions: result.themes.map((t) => ({ emotion: t, score: 0.6 })),
+        insights: result.gentleSuggestion,
+        generated_at: new Date(),
+      };
     } catch (error) {
       console.error("Error analyzing mood:", error);
       return null;

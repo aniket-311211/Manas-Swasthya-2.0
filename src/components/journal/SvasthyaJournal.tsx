@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { JournalEntry } from "@/types/journal";
 import { useUser } from "@clerk/clerk-react";
+import { api } from "@/lib/api";
 import { getJournalStorage } from "@/utils/journalStorage";
 import JournalEditor from "./JournalEditor";
 import CalendarView from "./CalendarView";
@@ -76,6 +77,19 @@ const SvasthyaJournal: React.FC = () => {
 
       const updatedEntries = await journalStorage.saveEntry(newEntry, entries);
       setEntries(updatedEntries);
+
+      // Sync core fields to backend (fire-and-forget)
+      if (user?.id) {
+        api
+          .createJournal({
+            clerkId: user.id,
+            title: newEntry.title || null,
+            content: newEntry.journal_text,
+            mood: newEntry.mood_summary?.primary_mood ?? null,
+            tags: [],
+          })
+          .catch(() => undefined);
+      }
 
       // Update statistics
       const stats = journalStorage.getStatistics(updatedEntries);
