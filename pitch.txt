@@ -1,0 +1,212 @@
+================================================================
+  MANASSWASTHYA — 3-MINUTE PITCH
+  Mental Wellness Platform for Indian College Students
+================================================================
+
+----------------------------------------------------------------
+OPENING HOOK (0:00 – 0:20)
+----------------------------------------------------------------
+"1 in 4 college students in India experiences significant mental
+health challenges — yet fewer than 10% ever seek help. Why?
+Because the system is inaccessible, expensive, and carries
+stigma. We built ManasSwasthya to change that."
+
+----------------------------------------------------------------
+WHAT IS IT? (0:20 – 0:45)
+----------------------------------------------------------------
+"ManasSwasthya — meaning 'Mental Wellness' in Sanskrit — is an
+AI-powered mental health companion designed specifically for
+Indian college students. It's a full-stack web platform that
+gives every student access to personalized mental health
+support, anytime, anywhere, completely free and confidential."
+
+----------------------------------------------------------------
+THE PROBLEM WE SOLVE (0:45 – 1:00)
+----------------------------------------------------------------
+"Traditional mental health support has three barriers:
+
+  • Cost — campus counselors are few and often unavailable.
+  • Stigma — students fear judgment from peers or professors.
+  • Awareness — most students don't even recognise they're
+    struggling.
+
+ManasSwasthya eliminates all three."
+
+----------------------------------------------------------------
+CORE FEATURES (1:00 – 1:45)
+----------------------------------------------------------------
+"The platform has four pillars:
+
+ONE — AI Chat Companion.
+Students can talk to Manas, our Gemini-powered AI, about
+stress, anxiety, relationships, or exam pressure — 24/7, in a
+judgment-free space. It detects crisis language in real time
+and instantly shows emergency helplines like KIRAN and iCall.
+
+TWO — Adaptive Mental Health Assessment.
+Not a static questionnaire — our AI generates each next
+question dynamically based on your previous answers, covering
+six domains: academic, social, emotional, behavioral,
+cognitive, and physical. It adapts like a real counselor would.
+
+THREE — Community Support.
+Students join anonymous group discussions, connect one-on-one
+with peer mentors, and register for wellness events — all
+within the platform.
+
+FOUR — Mood Tracking & Medicine Analysis.
+Students log daily moods; AI analyses patterns. They can also
+photograph a medicine label and our AI identifies it, explains
+side effects, and flags interactions."
+
+----------------------------------------------------------------
+WHAT MAKES IT STAND OUT (1:45 – 2:20)
+----------------------------------------------------------------
+"Three things set us apart:
+
+FIRST — Real AI, not fake AI.
+Every question in our assessment is generated live by Google
+Gemini based on your unique response history. No other student
+wellness app in India does this.
+
+SECOND — Crisis-first design.
+Mental health apps that ignore crisis risk are dangerous.
+ManasSwasthya has multi-layer crisis detection — in chat, in
+assessments, and in voice input — and always redirects to
+verified Indian helplines.
+
+THIRD — Built for India.
+Culturally sensitive prompts, Indian emergency contacts, support
+for regional context — we didn't just translate a Western app."
+
+----------------------------------------------------------------
+THE TECH (2:20 – 2:40)
+----------------------------------------------------------------
+"We built this on a modern, scalable stack: React and TypeScript
+on the frontend, Node.js and Express on the backend, PostgreSQL
+on Neon for persistent storage, Prisma as our ORM, Clerk for
+secure authentication, and Google Gemini AI powering all our
+intelligent features."
+
+----------------------------------------------------------------
+CLOSING (2:40 – 3:00)
+----------------------------------------------------------------
+"Mental health support shouldn't be a privilege. With
+ManasSwasthya, every student — whether they're in a metro or a
+tier-3 city — has a compassionate, intelligent companion in
+their pocket. We're not replacing counselors. We're making sure
+no student has to wait until it's too late. Thank you."
+
+
+================================================================
+  AI INTEGRATIONS
+================================================================
+
+1. AI CHAT COMPANION
+   - Model: Gemini 2.0 Flash (fallback: Gemini 2.0 Flash Lite)
+   - Maintains full conversation history per session
+   - Detects crisis keywords (e.g. "hurt myself", "end my life")
+   - Generates empathetic, culturally aware responses
+   - 30-second timeout guard to prevent infinite loading
+
+2. DYNAMIC ASSESSMENT QUESTION GENERATION
+   - Model: Gemini 1.5 Flash
+   - Generates each question as a live JSON object from Gemini
+   - Adapts based on: detected concerns, unexplored categories,
+     stress level, response speed, and emotional indicators
+   - 6 domains: Academic, Social, Emotional, Behavioral,
+     Cognitive, Physical
+
+3. ADAPTIVE SCORING ENGINE
+   - Combines Gemini analysis with custom scoring logic
+   - Produces: overall score, category scores, risk factors,
+     protective factors, intervention priority
+   - Outputs stress level: Low / Mild / Moderate / High
+
+4. CRISIS DETECTION (Multi-layer)
+   - Layer 1: Instant keyword scan on every answer
+   - Layer 2: Extreme score detection (4/4 on emotional)
+   - Layer 3: Gemini generates tailored crisis response
+   - Shows: KIRAN (1800-599-0019), iCall, Vandrevala Foundation
+
+5. MEDICINE IMAGE ANALYSIS
+   - Model: Gemini 2.0 Flash (Vision)
+   - Student uploads a photo of a medicine/pill
+   - Returns: name, uses, adult dosage, pediatric dosage,
+     side effects, warnings, safety verdict, confidence score
+
+6. MOOD JOURNAL AI ANALYSIS
+   - Model: Gemini 2.0 Flash
+   - Analyses free-text journal entries
+   - Returns structured emotional state, primary mood,
+     confidence, and actionable insights
+
+
+
+================================================================
+  EXACT TECH STACK
+================================================================
+
+FRONTEND
+--------
+Framework        : React 18 + TypeScript
+Build Tool       : Vite
+Styling          : Tailwind CSS + Radix UI
+Routing          : React Router v6
+State            : React Context API + useReducer
+Data Fetching    : TanStack React Query v5
+i18n             : i18next + react-i18next
+UI Library       : shadcn/ui (Button, Card, Badge, Input, etc.)
+Icons            : Lucide React
+Auth Client      : @clerk/clerk-react
+Date Utilities   : date-fns
+Animation        : Tailwind CSS animations
+
+BACKEND
+-------
+Runtime          : Node.js
+Framework        : Express.js
+ORM              : Prisma
+Database         : PostgreSQL (hosted on Neon — serverless)
+Auth             : Clerk (JWT verification)
+API Style        : REST
+
+AI / EXTERNAL APIs
+------------------
+AI Provider      : Google Gemini (via @google/generative-ai SDK)
+Models Used      : gemini-2.0-flash
+                   gemini-1.5-flash
+                   gemini-2.0-flash-lite (quota fallback)
+Authentication   : Clerk
+Speech           : Web Speech API (browser native)
+
+DATABASE SCHEMA (Prisma Models)
+--------------------------------
+User               - Student accounts (linked to Clerk)
+Mentor             - Peer mentor accounts
+ChatRoom           - Mentor & group chat rooms
+ChatMessage        - All messages (user/mentor/system role)
+Assessment         - Assessment results per student
+MoodEntry          - Daily mood journal entries
+Event              - Community wellness events
+EventRegistration  - Student event signups
+
+DEV TOOLING
+-----------
+Prisma Studio    : Visual database browser (localhost:5555)
+Prisma Migrate   : Schema version control
+Prisma Seed      : Test data population
+ESLint           : Code linting
+TypeScript       : Static type checking
+dotenv           : Environment variable management
+
+================================================================
+  EMERGENCY HELPLINES (Built into the App)
+================================================================
+KIRAN Mental Health    : 1800-599-0019  (24/7, Toll-free)
+Vandrevala Foundation  : 1860-2662-345  (24/7)
+iCall                  : 9152987821     (Mon-Sat, 8am-10pm)
+Snehi                  : 044-24640050   (24/7)
+India Emergency        : 112
+
+================================================================

@@ -1,0 +1,261 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for storing user information
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique // Clerk user ID
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  university String?
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  assessments Assessment[]
+  activities  UserActivity[]
+  chatHistory ChatMessage[]
+  
+  // New Relations
+  journalEntries JournalEntry[]
+  medicineAnalyses MedicineAnalysis[]
+  chatRooms      ChatRoom[]    @relation("ChatParticipants")
+
+  @@map("users")
+}
+
+// Assessment model for storing mental health assessments
+model Assessment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Assessment scores (0-100 scale)
+  stress      Int      @default(50)
+  anxiety     Int      @default(50)
+  sleep       Int      @default(50)
+  
+  // Assessment answers
+  answers     Json     // Array of answers from the assessment questions
+  
+  // AI-generated recommendations
+  activities  Json     // Array of recommended activities
+  games       Json     // Array of recommended games
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("assessments")
+}
+
+// User activity tracking
+model UserActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String   // Activity name (e.g., "Meditation", "Journaling")
+  duration    String   // Duration (e.g., "10 min", "15 min")
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("user_activities")
+}
+
+// Chat messages for AI conversations
+model ChatMessage {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Link to a chat room
+  roomId      String?  
+  room        ChatRoom? @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  
+  role        String   // 'user' or 'assistant'
+  content     String
+  timestamp   DateTime @default(now())
+  
+  // Optional assessment impact tracking
+  stressImpact     Int?
+  anxietyImpact    Int?
+  sleepImpact      Int?
+
+  @@map("chat_messages")
+}
+
+// Mindfulness games tracking
+model MindfulnessGame {
+  id          String   @id @default(cuid())
+  userId      String
+  
+  name        String   // Game name (e.g., "Mindful Breathing", "Color Therapy")
+  duration    String   // Duration (e.g., "5 min", "10 min")
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mindfulness_games")
+}
+
+// User mood tracking
+model MoodEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  
+  mood        String   // Emoji or mood description
+  notes       String?  // Optional notes about the mood
+  stress      Int?     // Optional stress level (1-10)
+  anxiety     Int?     // Optional anxiety level (1-10)
+  sleep       Int?     // Optional sleep quality (1-10)
+  
+  createdAt   DateTime @default(now())
+
+  @@map("mood_entries")
+}
+
+// Medicine Analysis History
+model MedicineAnalysis {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  imageUrl    String?  // URL or base64 of the image
+  medicineName String? // If analyzed by text
+  
+  // Analysis Result
+  name        String
+  uses        String[]
+  dosage      Json     // { adult, pediatric }
+  sideEffects String[]
+  warnings    String[]
+  safetyVerdict String
+  confidence  Int
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("medicine_analyses")
+}
+
+// Journal Entries
+model JournalEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title       String?
+  content     String
+  mood        String?  // Optional mood association
+  tags        String[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("journal_entries")
+}
+
+// Chat Rooms (Groups, Mentor Sessions, Direct Messages)
+model ChatRoom {
+  id          String   @id @default(cuid())
+  type        String   // 'group', 'mentor', 'private', 'ai_chat'
+  name        String?
+  description String?
+  
+  // Relations
+  participants User[]   @relation("ChatParticipants")
+  messages     ChatMessage[]
+  
+  // Metadata for specific types
+  // Group
+  topic       String?
+  tags        String[]
+  maxParticipants Int?
+  role        String? // For identifying role of the user provided in the context of the chat room
+  
+  // Mentor
+  mentorId    String?
+  studentId   String?
+  status      String? // 'active', 'completed'
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("chat_rooms")
+}
+
+// Mentor model for authenticated mentors
+model Mentor {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String   // Hashed password
+  name        String
+  avatar      String?
+  bio         String?
+  specialization String?
+  badge       String?  // e.g., "Certified Peer Counselor"
+  
+  status      String   @default("offline") // 'online', 'offline', 'away'
+  totalSessions Int    @default(0)
+  rating      Float    @default(5.0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("mentors")
+}
+
+// Events for community activities
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String   // 'Art', 'Music', 'Photography', 'Reading', etc.
+  host        String
+  image       String?  // Emoji or URL
+  
+  date        DateTime
+  duration    String   // e.g., "2 hours"
+  location    String   // "Online" or physical location
+  
+  maxParticipants Int
+  
+  // Relations
+  registrations EventRegistration[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("events")
+}
+
+// Event registrations
+model EventRegistration {
+  id          String   @id @default(cuid())
+  userId      String
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  status      String   @default("registered") // 'registered', 'attended', 'cancelled'
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, eventId])
+  @@map("event_registrations")
+}

@@ -1,0 +1,460 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Force override cached calendar styles */
+.journal-calendar-container {
+  background: linear-gradient(
+    135deg,
+    rgba(249, 245, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(243, 232, 255, 0.3) 100%
+  ) !important;
+  border-radius: 1.5rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(196, 181, 253, 0.2) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+}
+
+/* Force purple theme for journal calendar */
+.journal-calendar-container .calendar-header {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.05) 0%,
+    rgba(124, 58, 237, 0.05) 100%
+  ) !important;
+  border-radius: 1rem !important;
+  padding: 0.75rem !important;
+  border: 1px solid rgba(196, 181, 253, 0.3) !important;
+}
+
+.journal-calendar-container .calendar-day-header {
+  background: linear-gradient(
+    180deg,
+    rgba(196, 181, 253, 0.4) 0%,
+    rgba(221, 214, 254, 0.2) 100%
+  ) !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid rgba(196, 181, 253, 0.3) !important;
+  color: rgba(91, 33, 182, 0.7) !important;
+}
+
+.journal-calendar-container .calendar-day-cell {
+  height: 4rem !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Clear any conflicting UI calendar styles */
+.journal-calendar-container *:not(.react-day-picker) {
+  box-sizing: border-box !important;
+}
+
+/* Ensure journal calendar takes precedence over UI calendar */
+.journal-calendar-container {
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+/* Enhanced journal calendar styling to prevent conflicts */
+.journal-calendar-container .calendar-cell-content {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Global LTR text direction fixes for journal editor */
+.journal-text-fix {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+
+/* Force LTR for all text inputs in journal components */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+[contenteditable] {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+}
+
+/* Specific fixes for contentEditable elements */
+[contenteditable] {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+
+[contenteditable] *,
+[contenteditable] p,
+[contenteditable] div,
+[contenteditable] span,
+[contenteditable] strong,
+[contenteditable] em,
+[contenteditable] u {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* Fix cursor behavior in RTL-affected environments */
+[contenteditable]:focus {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Prevent RTL inheritance */
+.journal-container {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.journal-container * {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+}
+
+/* Enhanced styles for the new simplified text editor */
+.journal-textarea {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  font-feature-settings: "liga" 1, "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.journal-textarea:focus {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Smooth animations for journal interface */
+.journal-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for journal text areas */
+.journal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.journal-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.journal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.journal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* PWA Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* PWA Install Prompt Styles */
+.pwa-install-prompt {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Offline Indicator */
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #f59e0b;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  z-index: 9999;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.offline-indicator.show {
+  transform: translateY(0);
+}
+
+/* PWA-specific styles for mental health app */
+.pwa-safe-area {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Ensure proper spacing on mobile devices */
+@media (display-mode: standalone) {
+  body {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Hide address bar space on iOS */
+  .pwa-container {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* Manas Svasthya Design System - Therapeutic & Calming */
+
+@layer base {
+  :root {
+    /* Core therapeutic palette */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 20%;
+
+    /* Primary - Calming teal */
+    --primary: 170 60% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 170 60% 65%;
+    --primary-dark: 170 70% 35%;
+
+    /* Secondary - Warm sage */
+    --secondary: 140 25% 88%;
+    --secondary-foreground: 215 25% 20%;
+
+    /* Muted - Soft neutrals */
+    --muted: 210 15% 95%;
+    --muted-foreground: 215 15% 55%;
+
+    /* Accent - Gentle purple for highlights */
+    --accent: 250 35% 85%;
+    --accent-foreground: 250 40% 25%;
+
+    /* Therapeutic accent colors */
+    --therapeutic-blue: 200 50% 60%;
+    --therapeutic-green: 140 45% 55%;
+    --therapeutic-purple: 260 35% 65%;
+    --therapeutic-warm: 25 60% 75%;
+
+    /* Status colors */
+    --success: 140 50% 50%;
+    --success-foreground: 0 0% 100%;
+    --warning: 35 85% 55%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 90%;
+    --input: 210 15% 92%;
+    --ring: 170 60% 45%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--primary-light))
+    );
+    --gradient-calm: linear-gradient(
+      180deg,
+      hsl(var(--background)),
+      hsl(var(--secondary))
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(var(--therapeutic-blue)),
+      hsl(var(--therapeutic-purple))
+    );
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -2px hsl(var(--primary) / 0.1);
+    --shadow-card: 0 8px 32px -4px hsl(215 25% 20% / 0.08);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.15);
+
+    /* Animation */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-gentle: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Therapeutic UI Components */
+  .mindwell-card {
+    @apply bg-card rounded-2xl border-0 shadow-[var(--shadow-card)] transition-[var(--transition-smooth)];
+  }
+
+  .mindwell-button {
+    @apply inline-flex items-center justify-center rounded-xl font-medium transition-[var(--transition-smooth)] 
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .mindwell-input {
+    @apply flex w-full rounded-xl border border-input bg-background px-4 py-3
+           text-sm transition-[var(--transition-smooth)] placeholder:text-muted-foreground
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-calm {
+    background: var(--gradient-calm);
+  }
+
+  .shadow-therapeutic {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .animate-gentle-bounce {
+    animation: gentleBounce 2s ease-in-out infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes gentleBounce {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
