@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "prisma generate && vite build",
+  "rewrites": [
+    { "source": "/((?!api|assets|icons|animation|manifest.json|sw.js|favicon.ico).*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/**/*.ts": { "maxDuration": 30 }
+  }
+}
