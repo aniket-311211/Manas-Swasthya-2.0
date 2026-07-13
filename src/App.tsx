@@ -69,12 +69,11 @@ const App = () => {
     if (isSignedIn && user) {
       const syncUser = async () => {
         try {
-          await api.createUser({
+          await api.upsertUser({
             clerkId: user.id,
             email: user.primaryEmailAddress?.emailAddress || '',
             firstName: user.firstName || '',
-            lastName: user.lastName || '',
-            imageUrl: user.imageUrl || ''
+            lastName: user.lastName || ''
           });
         } catch (error) {
           console.error('Failed to sync user:', error);

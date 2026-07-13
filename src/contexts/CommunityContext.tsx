@@ -135,7 +135,7 @@ function communityReducer(state: CommunityState, action: CommunityAction): Commu
     }
 }
 
-const API_BASE = 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api$/, '') : '';
 
 interface CommunityContextType {
     state: CommunityState;
@@ -174,10 +174,10 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const loginMentor = async (email: string, password: string): Promise<boolean> => {
         try {
             dispatch({ type: 'SET_LOADING', payload: true });
-            const response = await fetch(`${API_BASE}/api/mentors/login`, {
+            const response = await fetch(`${API_BASE}/api/mentors`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ action: 'login', email, password }),
             });
 
             if (!response.ok) {
@@ -185,9 +185,9 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 return false;
             }
 
-            const data = await response.json();
-            dispatch({ type: 'MENTOR_LOGIN', payload: data.mentor });
-            localStorage.setItem('mentorSession', JSON.stringify(data.mentor));
+            const envelope = await response.json();
+            dispatch({ type: 'MENTOR_LOGIN', payload: envelope.data.mentor });
+            localStorage.setItem('mentorSession', JSON.stringify(envelope.data.mentor));
             return true;
         } catch (error) {
             console.error('Login error:', error);
@@ -201,10 +201,10 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const logoutMentor = async () => {
         if (state.currentMentor) {
             try {
-                await fetch(`${API_BASE}/api/mentors/logout`, {
+                await fetch(`${API_BASE}/api/mentors`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ mentorId: state.currentMentor.id }),
+                    body: JSON.stringify({ action: 'logout', mentorId: state.currentMentor.id }),
                 });
             } catch (e) {
                 console.error('Logout error:', e);

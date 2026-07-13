@@ -115,12 +115,9 @@ const MoodTracker: React.FC<MoodTrackerProps> = ({ userId }) => {
       // Save to API
       if (userId) {
         await api.saveMood({
-          userId,
+          clerkId: userId,
           mood: selectedMood,
-          notes: comment.trim(),
-          stress: 0, // Default or prompt user
-          anxiety: 0,
-          sleep: 0
+          notes: comment.trim()
         });
       }
 

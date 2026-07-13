@@ -546,7 +546,7 @@ const ManasAI: React.FC = () => {
       try {
         if (user?.id) {
           await api.saveAssessment({
-            userId: user.id,
+            clerkId: user.id,
             stress: scores.stress,
             anxiety: scores.anxiety,
             sleep: scores.sleep,

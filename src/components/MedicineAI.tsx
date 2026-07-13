@@ -63,10 +63,7 @@ const MedicineAI: React.FC = () => {
           // Save to backend
           if (user) {
             try {
-              await api.saveMedicineAnalysis(user.id, {
-                ...analysis,
-                imageUrl: imageData // Note: This might be large, real apps usually upload to cloud storage first
-              });
+              await api.saveMedicine(user.id, analysis);
             } catch (saveError) {
               console.error("Failed to save analysis history", saveError);
             }
@@ -134,10 +131,7 @@ const MedicineAI: React.FC = () => {
       // Save to backend
       if (user) {
         try {
-          await api.saveMedicineAnalysis(user.id, {
-            ...analysis,
-            medicineName: inputText
-          });
+          await api.saveMedicine(user.id, { ...analysis, medicineName: inputText });
         } catch (saveError) {
           console.error("Failed to save analysis history", saveError);
         }

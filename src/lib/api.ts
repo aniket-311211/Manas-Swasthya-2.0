@@ -1,112 +1,156 @@
-const API_URL = 'http://localhost:3001/api';
+import type {
+  User,
+  Assessment,
+  MoodEntry,
+  JournalEntry,
+  MedicineAnalysis,
+  ChatRoom,
+  ChatMessage,
+  Mentor,
+  CommunityEvent,
+} from '@/types/api';
+
+const API_URL: string = import.meta.env.VITE_API_URL ?? '/api';
+
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+type Envelope<T> = { ok: true; data: T } | { ok: false; error: string };
+
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...init,
+  });
+  let body: Envelope<T>;
+  try {
+    body = (await res.json()) as Envelope<T>;
+  } catch {
+    throw new ApiError(`Unexpected response from server (${res.status})`, res.status);
+  }
+  if (!body.ok) throw new ApiError(body.error, res.status);
+  return body.data;
+}
 
 export const api = {
-    // User
-    createUser: async (userData: any) => {
-        const res = await fetch(`${API_URL}/users`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData),
-        });
-        return res.json();
-    },
+  upsertUser: (u: {
+    clerkId: string;
+    email: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    university?: string | null;
+  }) => request<User>('/users', { method: 'POST', body: JSON.stringify(u) }),
 
-    // Assessments
-    saveAssessment: async (data: any) => {
-        const res = await fetch(`${API_URL}/assessments`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        return res.json();
-    },
+  saveAssessment: (a: {
+    clerkId: string;
+    stress: number;
+    anxiety: number;
+    sleep: number;
+    answers: unknown;
+    activities?: unknown;
+    games?: unknown;
+  }) => request<Assessment>('/assessments', { method: 'POST', body: JSON.stringify(a) }),
+  getAssessments: (clerkId: string) =>
+    request<Assessment[]>(`/assessments?clerkId=${encodeURIComponent(clerkId)}`),
 
-    getAssessments: async (clerkId: string) => {
-        const res = await fetch(`${API_URL}/assessments/user/${clerkId}`);
-        return res.json();
-    },
+  saveMood: (m: {
+    clerkId: string;
+    mood: string;
+    notes?: string | null;
+    stress?: number | null;
+    anxiety?: number | null;
+    sleep?: number | null;
+  }) => request<MoodEntry>('/mood', { method: 'POST', body: JSON.stringify(m) }),
+  getMoodHistory: (clerkId: string) =>
+    request<MoodEntry[]>(`/mood?clerkId=${encodeURIComponent(clerkId)}`),
 
-    // Mood
-    saveMood: async (data: any) => {
-        const res = await fetch(`${API_URL}/mood`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        return res.json();
-    },
+  createJournal: (j: {
+    clerkId: string;
+    title?: string | null;
+    content: string;
+    mood?: string | null;
+    tags?: string[];
+  }) => request<JournalEntry>('/journal', { method: 'POST', body: JSON.stringify(j) }),
+  updateJournal: (j: {
+    id: string;
+    clerkId: string;
+    title?: string | null;
+    content?: string;
+    mood?: string | null;
+    tags?: string[];
+  }) => request<JournalEntry>('/journal', { method: 'PUT', body: JSON.stringify(j) }),
+  deleteJournal: (id: string, clerkId: string) =>
+    request<{ deleted: boolean }>(
+      `/journal?id=${encodeURIComponent(id)}&clerkId=${encodeURIComponent(clerkId)}`,
+      { method: 'DELETE' },
+    ),
+  getJournal: (clerkId: string) =>
+    request<JournalEntry[]>(`/journal?clerkId=${encodeURIComponent(clerkId)}`),
 
-    getMoodHistory: async (clerkId: string) => {
-        const res = await fetch(`${API_URL}/mood/user/${clerkId}`);
-        return res.json();
-    },
+  saveMedicine: (clerkId: string, analysis: unknown) =>
+    request<MedicineAnalysis>('/medicine', {
+      method: 'POST',
+      body: JSON.stringify({ clerkId, analysis }),
+    }),
+  getMedicineHistory: (clerkId: string) =>
+    request<MedicineAnalysis[]>(`/medicine?clerkId=${encodeURIComponent(clerkId)}`),
 
-    // AI Chat (Gemini)
-    analyze: async (prompt: string) => {
-        const res = await fetch(`${API_URL}/analyze`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt }),
-        });
-        return res.json();
-    },
+  getChatRooms: (opts?: { clerkId?: string; type?: string }) => {
+    const params = new URLSearchParams();
+    if (opts?.clerkId) params.set('clerkId', opts.clerkId);
+    if (opts?.type) params.set('type', opts.type);
+    const qs = params.toString();
+    return request<ChatRoom[]>(`/chat/rooms${qs ? `?${qs}` : ''}`);
+  },
+  createChatRoom: (room: {
+    type: 'group' | 'mentor' | 'private' | 'ai_chat';
+    name?: string | null;
+    description?: string | null;
+    clerkId?: string | null;
+    topic?: string | null;
+    tags?: string[];
+  }) => request<ChatRoom>('/chat/rooms', { method: 'POST', body: JSON.stringify(room) }),
+  getChatMessages: (roomId: string, opts?: { limit?: number; before?: string }) => {
+    const params = new URLSearchParams({ roomId });
+    if (opts?.limit) params.set('limit', String(opts.limit));
+    if (opts?.before) params.set('before', opts.before);
+    return request<ChatMessage[]>(`/chat/messages?${params.toString()}`);
+  },
+  sendChatMessage: (msg: {
+    roomId: string;
+    clerkId?: string | null;
+    content: string;
+    role?: 'user' | 'assistant' | 'system';
+    senderName?: string | null;
+  }) => request<ChatMessage>('/chat/messages', { method: 'POST', body: JSON.stringify(msg) }),
 
-    // Chat System
-    createChatRoom: async (type: string, participants: string[]) => {
-        const res = await fetch(`${API_URL}/chat/room`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type, participants }),
-        });
-        return res.json();
-    },
+  getCommunityGroups: (clerkId?: string) =>
+    request<ChatRoom[]>(`/community/groups${clerkId ? `?clerkId=${encodeURIComponent(clerkId)}` : ''}`),
+  joinCommunityGroup: (clerkId: string, groupId: string) =>
+    request<{ joined: boolean }>('/community/join', {
+      method: 'POST',
+      body: JSON.stringify({ clerkId, groupId }),
+    }),
 
-    getChatRooms: async (clerkId: string) => {
-        const res = await fetch(`${API_URL}/chat/rooms/${clerkId}`);
-        return res.json();
-    },
+  getEvents: (clerkId?: string) =>
+    request<CommunityEvent[]>(`/events${clerkId ? `?clerkId=${encodeURIComponent(clerkId)}` : ''}`),
+  registerEvent: (clerkId: string, eventId: string) =>
+    request<unknown>('/events', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'register', eventId, clerkId }),
+    }),
+  unregisterEvent: (clerkId: string, eventId: string) =>
+    request<unknown>('/events', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'unregister', eventId, clerkId }),
+    }),
 
-    getChatMessages: async (roomId: string) => {
-        const res = await fetch(`${API_URL}/chat/room/${roomId}/messages`);
-        return res.json();
-    },
-
-    sendMessage: async (messageData: any) => {
-        const res = await fetch(`${API_URL}/chat/message`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(messageData),
-        });
-        return res.json();
-    },
-
-    // Medicine AI
-    saveMedicineAnalysis: async (userId: string, analysis: any) => {
-        const res = await fetch(`${API_URL}/medicine/save`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, analysis }),
-        });
-        return res.json();
-    },
-
-    getMedicineHistory: async (clerkId: string) => {
-        const res = await fetch(`${API_URL}/medicine/history/${clerkId}`);
-        return res.json();
-    },
-
-    // Community
-    getCommunityGroups: async () => {
-        const res = await fetch(`${API_URL}/community/groups`);
-        return res.json();
-    },
-
-    joinCommunityGroup: async (userId: string, groupId: string) => {
-        const res = await fetch(`${API_URL}/community/join`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, groupId }),
-        });
-        return res.json();
-    }
+  getMentors: () => request<Mentor[]>('/mentors'),
 };

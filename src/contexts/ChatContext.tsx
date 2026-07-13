@@ -259,9 +259,9 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
 
     // Try to persist to backend (fire-and-forget, don't block UI)
     try {
-      await api.sendMessage({
+      await api.sendChatMessage({
         roomId,
-        userId: state.currentUser.id,
+        clerkId: state.currentUser.id,
         content,
         role: 'user'
       });
