@@ -19,6 +19,7 @@ import aiChat from './api/ai/chat';
 import aiAssessment from './api/ai/assessment';
 import aiMedicine from './api/ai/medicine';
 import aiAnalyze from './api/ai/analyze';
+import aiAdvisory from './api/ai/advisory';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -52,6 +53,7 @@ app.all('/api/ai/chat', wrap(aiChat));
 app.all('/api/ai/assessment', wrap(aiAssessment));
 app.all('/api/ai/medicine', wrap(aiMedicine));
 app.all('/api/ai/analyze', wrap(aiAnalyze));
+app.all('/api/ai/advisory', wrap(aiAdvisory));
 
 const PORT = Number(process.env.PORT ?? 3001);
 app.listen(PORT, () => {

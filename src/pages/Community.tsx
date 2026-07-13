@@ -32,6 +32,7 @@ const CommunityContent: React.FC = () => {
   useEffect(() => {
     fetchMentors();
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Mock mentor for display (will be replaced by API data)
@@ -50,7 +51,7 @@ const CommunityContent: React.FC = () => {
   // If showing mentor login
   if (showMentorLogin) {
     return (
-      <div className="min-h-screen pt-20 pb-8 bg-gradient-calm">
+      <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
         <div className="container mx-auto px-6 max-w-4xl py-6">
           <MentorLogin
             onBack={() => setShowMentorLogin(false)}
@@ -64,7 +65,7 @@ const CommunityContent: React.FC = () => {
   // If in chat with mentor
   if (selectedMentor) {
     return (
-      <div className="min-h-screen pt-20 pb-8 bg-gradient-calm">
+      <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
         <div className="container mx-auto px-6 max-w-4xl py-6 pb-24 lg:pb-6">
           <div className="mb-6">
             <Link
@@ -87,7 +88,7 @@ const CommunityContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-8 bg-gradient-calm">
+    <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
       <div className="container mx-auto px-6 max-w-6xl py-6 pb-24 lg:pb-6">
         {/* Header */}
         <div className="mb-8">

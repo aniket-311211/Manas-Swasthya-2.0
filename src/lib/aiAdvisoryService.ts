@@ -1,4 +1,12 @@
-import { geminiService } from './gemini';
+import { request } from './api';
+
+async function advisoryPrompt(prompt: string): Promise<string> {
+  const { text } = await request<{ text: string }>('/ai/advisory', {
+    method: 'POST',
+    body: JSON.stringify({ clerkId: localStorage.getItem('clerk_user_id') ?? 'anonymous', prompt }),
+  });
+  return text;
+}
 
 // Assessment data interface for AI analysis
 export interface AssessmentData {
@@ -91,7 +99,7 @@ Consider:
 - When to seek professional help`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {
@@ -151,7 +159,7 @@ Prioritize resources that:
 - Provide immediate practical benefit`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {
@@ -198,7 +206,7 @@ Consider:
 - Language preferences if indicated`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {
@@ -250,7 +258,7 @@ Questions should be:
 - Actionable and insightful`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {
@@ -298,7 +306,7 @@ Ensure advice is:
 - Encouraging and hopeful`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {
@@ -362,7 +370,7 @@ Focus on:
 - Actionable insights for continued progress`;
 
     try {
-      const response = await geminiService.sendMessage(prompt);
+      const response = await advisoryPrompt(prompt);
       const cleanResponse = this.cleanJSONResponse(response);
       return JSON.parse(cleanResponse);
     } catch (error) {

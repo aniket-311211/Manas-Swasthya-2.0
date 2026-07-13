@@ -151,7 +151,7 @@ const Resources: React.FC = () => {
 
   if (selectedResource) {
     return (
-      <div className="min-h-screen pt-24 pb-8 bg-gradient-calm">
+      <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
         <div className="container mx-auto px-6 max-w-6xl">
           <button
             onClick={() => setSelectedResource(null)}
@@ -421,7 +421,7 @@ const Resources: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-8 bg-gradient-calm">
+    <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
       <div className="container mx-auto px-6 max-w-6xl">
         <div className="mb-8">
           <Link to="/dashboard" className="inline-flex items-center text-primary hover:text-primary/80 mb-4">

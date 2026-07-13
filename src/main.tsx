@@ -75,9 +75,9 @@ const SetupPage = () => (
           <code style={{ display: "block", background: "rgba(0,0,0,0.3)", color: "#f59e0b", padding: "10px 14px", borderRadius: "8px", fontSize: "13px" }}>VITE_CLERK_PUBLISHABLE_KEY=pk_test_...</code>
         </div>
         <div style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.3)", borderRadius: "12px", padding: "20px" }}>
-          <p style={{ color: "#93c5fd", fontWeight: 600, margin: "0 0 6px" }}>2. Gemini AI API Key</p>
+          <p style={{ color: "#93c5fd", fontWeight: 600, margin: "0 0 6px" }}>2. Gemini AI API Key (server-side only)</p>
           <p style={{ color: "#94a3b8", margin: "0 0 8px", fontSize: "13px" }}>Get from <strong style={{ color: "#93c5fd" }}>aistudio.google.com/apikey</strong></p>
-          <code style={{ display: "block", background: "rgba(0,0,0,0.3)", color: "#f59e0b", padding: "10px 14px", borderRadius: "8px", fontSize: "13px" }}>VITE_GEMINI_API_KEY=AIza...{"\n"}GEMINI_API_KEY=AIza...</code>
+          <code style={{ display: "block", background: "rgba(0,0,0,0.3)", color: "#f59e0b", padding: "10px 14px", borderRadius: "8px", fontSize: "13px" }}>GEMINI_API_KEY=AIza...</code>
         </div>
         <div style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: "12px", padding: "20px" }}>
           <p style={{ color: "#86efac", fontWeight: 600, margin: "0 0 6px" }}>3. Neon PostgreSQL URL</p>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Upload, Camera, Send, AlertTriangle, Info, Clock, Users, History } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '@clerk/clerk-react';
-import { medicineAnalysisService, MedicineAnalysis, testMedicineAPI } from '../lib/gemini';
+import { aiMedicine } from '@/lib/ai';
+import type { MedicineAiResult as MedicineAnalysis } from '@/types/api';
 import { api } from '../lib/api';
 
 const MedicineAI: React.FC = () => {
@@ -55,7 +56,7 @@ const MedicineAI: React.FC = () => {
           console.log('File type:', file.type);
           console.log('Image data length:', imageData.length);
 
-          const analysis = await medicineAnalysisService.analyzeMedicineImage(imageData);
+          const analysis = await aiMedicine(user?.id ?? 'anonymous', { imageBase64: imageData });
           console.log('Analysis result:', analysis);
           setDetectedMedicine(analysis.name);
           setMedicineAnalysis(analysis);
@@ -118,10 +119,8 @@ const MedicineAI: React.FC = () => {
       console.log('=== MEDICINE AI DEBUG START ===');
       console.log('Starting text analysis for:', inputText);
       console.log('Environment variables check:');
-      console.log('VITE_GEMINI_API_KEY exists:', !!import.meta.env.VITE_GEMINI_API_KEY);
-      console.log('VITE_GEMINI_FALLBACK_API_KEY exists:', !!import.meta.env.VITE_GEMINI_FALLBACK_API_KEY);
 
-      const analysis = await medicineAnalysisService.analyzeMedicineText(inputText);
+      const analysis = await aiMedicine(user?.id ?? 'anonymous', { medicineName: inputText });
       console.log('Text analysis result:', analysis);
       console.log('Setting medicine analysis:', analysis);
 
@@ -181,35 +180,11 @@ const MedicineAI: React.FC = () => {
   };
 
   // Check if API keys are configured
-  const hasApiKeys = !!(import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_GEMINI_FALLBACK_API_KEY);
+  const hasApiKeys = true; // AI runs server-side now
 
-  // API Key Warning Component
-  const ApiKeyWarning = () => {
-    if (hasApiKeys) return null;
-
-    return (
-      <div className="mb-6 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-        <div className="flex items-start space-x-3">
-          <AlertTriangle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-medium text-amber-900 mb-1">AI Service Configuration Needed</h4>
-            <p className="text-sm text-amber-800 mb-2">
-              To enable full AI-powered medicine analysis, please configure your Gemini API key.
-            </p>
-            <div className="text-xs text-amber-700">
-              <p className="mb-1">• Create a .env file in your project root</p>
-              <p className="mb-1">• Add: VITE_GEMINI_API_KEY=your_api_key_here</p>
-              <p>• Get your free API key from: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="underline">Google AI Studio</a></p>
-            </div>
-            <p className="text-xs text-amber-600 mt-2">Note: Basic medicine database is still available for common medicines.</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-24 lg:pb-6">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16 lg:pb-8">
       <div className="mb-8">
         <a href="/dashboard" className="inline-flex items-center text-primary hover:text-primary/80 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 mr-2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
@@ -220,7 +195,7 @@ const MedicineAI: React.FC = () => {
       </div>
 
       {/* API Key Warning */}
-      <ApiKeyWarning />
+      
 
       {!showResults && !uploadedImage && (
         <>
@@ -275,94 +250,6 @@ const MedicineAI: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Debug Test Buttons */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <button
-                    onClick={async () => {
-                      try {
-                        console.log('Testing API directly...');
-                        const result = await testMedicineAPI('paracetamol');
-                        console.log('Direct API test result:', result);
-                        setInputText('paracetamol');
-                        setDetectedMedicine(result.name);
-                        setMedicineAnalysis(result);
-                        setShowResults(true);
-                      } catch (error) {
-                        console.error('Direct API test failed:', error);
-                        setError('API test failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
-                      }
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600"
-                  >
-                    Test API Direct
-                  </button>
-                  <button
-                    onClick={() => {
-                      // Create a test image for debugging
-                      const canvas = document.createElement('canvas');
-                      canvas.width = 200;
-                      canvas.height = 200;
-                      const ctx = canvas.getContext('2d');
-                      if (ctx) {
-                        ctx.fillStyle = 'white';
-                        ctx.fillRect(0, 0, 200, 200);
-                        ctx.fillStyle = 'black';
-                        ctx.font = '16px Arial';
-                        ctx.fillText('Paracetamol 500mg', 20, 100);
-                        ctx.fillText('Tablets', 20, 120);
-                      }
-                      const testImageData = canvas.toDataURL('image/jpeg');
-                      setUploadedImage(testImageData);
-                      setIsProcessing(true);
-                      setError(null);
-
-                      medicineAnalysisService.analyzeMedicineImage(testImageData)
-                        .then(analysis => {
-                          console.log('Test image analysis result:', analysis);
-                          setDetectedMedicine(analysis.name);
-                          setMedicineAnalysis(analysis);
-                          setIsProcessing(false);
-                        })
-                        .catch(err => {
-                          console.error('Test image analysis failed:', err);
-                          setError('Test image analysis failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
-                          setDetectedMedicine('Unable to identify medicine');
-                          setMedicineAnalysis(null);
-                          setIsProcessing(false);
-                        });
-                    }}
-                    className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600"
-                  >
-                    Test Image Analysis
-                  </button>
-                  <button
-                    onClick={() => {
-                      setInputText('paracetamol');
-                      handleTextQuery();
-                    }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600"
-                  >
-                    Test Paracetamol
-                  </button>
-                  <button
-                    onClick={() => {
-                      setInputText('ibuprofen');
-                      handleTextQuery();
-                    }}
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600"
-                  >
-                    Test Ibuprofen
-                  </button>
-                  <button
-                    onClick={() => {
-                      setInputText('aspirin');
-                      handleTextQuery();
-                    }}
-                    className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm hover:bg-purple-600"
-                  >
-                    Test Aspirin
-                  </button>
-                </div>
               </div>
 
               {/* Divider */}

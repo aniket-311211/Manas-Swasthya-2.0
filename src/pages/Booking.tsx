@@ -526,7 +526,7 @@ const Booking: React.FC = () => {
 
   if (selectedConsultant && !showBookingModal) {
     return (
-      <div className="min-h-screen pt-20 pb-8 bg-gradient-calm">
+      <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 lg:pb-6">
         <button
           onClick={() => setSelectedConsultant(null)}
@@ -636,7 +636,7 @@ const Booking: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-8 bg-gradient-calm">
+    <div className="min-h-full pt-6 pb-12 bg-gradient-calm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 lg:pb-6">
       {/* Header with Back to Dashboard and Join Us Button */}
       <div className="mb-8">

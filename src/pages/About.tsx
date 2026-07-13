@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const About = () => {
   return (
-    <div className="min-h-screen pt-20 pb-8 bg-gradient-to-br from-background to-secondary/5">
+    <div className="min-h-full pt-6 pb-12 bg-gradient-to-br from-background to-secondary/5">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="mb-8">
           <Link to="/" className="inline-flex items-center text-primary hover:text-primary/80 mb-4">
