@@ -13,7 +13,22 @@ try {
 } catch (e) {
   console.log('goto warning:', String(e).slice(0, 120));
 }
-await page.waitForTimeout(2500);
+await page.waitForTimeout(2000);
+if (process.env.FULLPAGE === '1') {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let y = 0;
+      const step = () => {
+        y += 400;
+        window.scrollTo(0, y);
+        if (y < document.body.scrollHeight) setTimeout(step, 120);
+        else { window.scrollTo(0, 0); setTimeout(resolve, 400); }
+      };
+      step();
+    });
+  });
+  await page.waitForTimeout(800);
+}
 await page.screenshot({ path: out, fullPage: process.env.FULLPAGE === '1' });
 console.log('saved', out);
 await browser.close();
