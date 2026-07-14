@@ -78,13 +78,13 @@
 
   .dark {
     /* Deep forest slate (aurora) */
-    --background: 160 13% 9%;
+    --background: 160 12% 12%;
     --foreground: 42 42% 94%;
 
-    --card: 160 10% 13%;
+    --card: 158 10% 17%;
     --card-foreground: 42 42% 94%;
 
-    --popover: 160 10% 13%;
+    --popover: 158 10% 17%;
     --popover-foreground: 42 42% 94%;
 
     --primary: 136 21% 68%;
@@ -95,7 +95,7 @@
     --secondary: 259 18% 24%;
     --secondary-foreground: 259 30% 88%;
 
-    --muted: 160 8% 17%;
+    --muted: 158 9% 22%;
     --muted-foreground: 42 20% 65%;
 
     --accent: 259 32% 78%;
@@ -109,28 +109,28 @@
     --warning: 25 60% 62%;
     --warning-foreground: 160 13% 9%;
 
-    --border: 160 8% 22%;
-    --input: 160 8% 22%;
+    --border: 158 9% 28%;
+    --input: 158 9% 28%;
     --ring: 136 21% 68%;
 
     --sage: 136 21% 68%;
     --sage-deep: 134 13% 55%;
     --lavender: 259 32% 83%;
     --clay: 27 53% 81%;
-    --canvas-deep: 160 13% 7%;
+    --canvas-deep: 160 12% 9%;
 
-    --glass: rgba(255, 255, 255, 0.07);
-    --glass-border: rgba(255, 255, 255, 0.13);
+    --glass: rgba(255, 255, 255, 0.11);
+    --glass-border: rgba(255, 255, 255, 0.22);
     --shadow-soft: 0 8px 30px -8px rgba(0, 0, 0, 0.5);
     --shadow-lift: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
 
-    --sidebar-background: 160 13% 11%;
+    --sidebar-background: 160 12% 14%;
     --sidebar-foreground: 42 42% 94%;
     --sidebar-primary: 136 21% 68%;
     --sidebar-primary-foreground: 160 13% 9%;
-    --sidebar-accent: 160 8% 17%;
+    --sidebar-accent: 158 9% 22%;
     --sidebar-accent-foreground: 42 42% 94%;
-    --sidebar-border: 160 8% 22%;
+    --sidebar-border: 158 9% 28%;
     --sidebar-ring: 136 21% 68%;
   }
 

@@ -9,7 +9,11 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["health", "medical", "lifestyle"],
+  "categories": [
+    "health",
+    "medical",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
@@ -60,41 +64,42 @@
       "purpose": "maskable any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop-screenshot.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/screenshots/mobile-screenshot.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
   "shortcuts": [
     {
       "name": "Chat with AI",
       "short_name": "Chat",
       "description": "Start a conversation with our AI mental health assistant",
       "url": "/chat",
-      "icons": [{ "src": "/icons/chat-icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/chat-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Take Assessment",
       "short_name": "Assessment",
       "description": "Complete a mental health assessment",
       "url": "/assessment",
-      "icons": [{ "src": "/icons/assessment-icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/assessment-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Resources",
       "short_name": "Resources",
       "description": "Access mental health resources and content",
       "url": "/resources",
-      "icons": [{ "src": "/icons/resources-icon-96x96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "/icons/resources-icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ]
 }
