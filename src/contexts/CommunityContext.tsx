@@ -219,8 +219,8 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         try {
             const response = await fetch(`${API_BASE}/api/mentors`);
             if (response.ok) {
-                const mentors = await response.json();
-                dispatch({ type: 'SET_MENTORS', payload: mentors });
+                const envelope = await response.json();
+                dispatch({ type: 'SET_MENTORS', payload: envelope.data ?? [] });
             }
         } catch (error) {
             console.error('Error fetching mentors:', error);
@@ -232,7 +232,7 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const url = type ? `${API_BASE}/api/chat/rooms?type=${type}` : `${API_BASE}/api/chat/rooms`;
             const response = await fetch(url);
             if (response.ok) {
-                const rooms = await response.json();
+                const rooms = (await response.json()).data ?? [];
                 // Transform rooms to match our ChatRoom interface
                 const transformedRooms: ChatRoom[] = rooms.map((room: Record<string, never> & ChatRoom) => ({
                     id: room.id,
@@ -256,9 +256,9 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const fetchMessages = async (roomId: string, roomData?: ChatRoom) => {
         try {
-            const response = await fetch(`${API_BASE}/api/chat/rooms/${roomId}/messages`);
+            const response = await fetch(`${API_BASE}/api/chat/messages?roomId=${roomId}`);
             if (response.ok) {
-                const messages = await response.json();
+                const messages = (await response.json()).data ?? [];
                 // Transform messages to add required fields
                 const transformedMessages = messages.map((msg: Record<string, never> & { id: string; roomId: string; [k: string]: unknown }) => ({
                     id: msg.id,
@@ -293,20 +293,20 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 : '👤';
             const role = state.isMentorLoggedIn ? 'mentor' : 'user';
 
-            const response = await fetch(`${API_BASE}/api/chat/rooms/${roomId}/messages`, {
+            const response = await fetch(`${API_BASE}/api/chat/messages`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    roomId,
                     clerkId: user?.id,
                     content,
-                    role,
+                    role: role === 'mentor' ? 'assistant' : 'user',
                     senderName,
-                    senderAvatar,
                 }),
             });
 
             if (response.ok) {
-                const message = await response.json();
+                const message = (await response.json()).data;
                 dispatch({
                     type: 'ADD_MESSAGE',
                     payload: {
@@ -339,11 +339,12 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                     name: 'Mentor Session',
                     mentorId,
                     studentId: user?.id,
+                    clerkId: user?.id,
                 }),
             });
 
             if (response.ok) {
-                const roomData = await response.json();
+                const roomData = (await response.json()).data;
 
                 // Create a properly formatted room object
                 const newRoom: ChatRoom = {
@@ -377,12 +378,12 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const fetchEvents = async () => {
         try {
             const url = user?.id
-                ? `${API_BASE}/api/events?userId=${user.id}`
+                ? `${API_BASE}/api/events?clerkId=${user.id}`
                 : `${API_BASE}/api/events`;
             const response = await fetch(url);
             if (response.ok) {
-                const events = await response.json();
-                dispatch({ type: 'SET_EVENTS', payload: events });
+                const envelope = await response.json();
+                dispatch({ type: 'SET_EVENTS', payload: envelope.data ?? [] });
             }
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -392,10 +393,10 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const registerForEvent = async (eventId: string) => {
         if (!user?.id) return;
         try {
-            const response = await fetch(`${API_BASE}/api/events/${eventId}/register`, {
+            const response = await fetch(`${API_BASE}/api/events`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ clerkId: user.id }),
+                body: JSON.stringify({ action: 'register', eventId, clerkId: user.id }),
             });
 
             if (response.ok) {
@@ -412,10 +413,10 @@ export const CommunityProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const unregisterFromEvent = async (eventId: string) => {
         if (!user?.id) return;
         try {
-            const response = await fetch(`${API_BASE}/api/events/${eventId}/register`, {
-                method: 'DELETE',
+            const response = await fetch(`${API_BASE}/api/events`, {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ clerkId: user.id }),
+                body: JSON.stringify({ action: 'unregister', eventId, clerkId: user.id }),
             });
 
             if (response.ok) {

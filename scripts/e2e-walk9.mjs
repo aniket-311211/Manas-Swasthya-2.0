@@ -1,0 +1,12 @@
+import { launch, BASE } from './e2e-lib.mjs';
+const S = '/sessions/youthful-laughing-lovelace/mnt/outputs/shots';
+const { browser, page } = await launch();
+await page.goto(`${BASE}/medicine`, { waitUntil: 'domcontentloaded', timeout: 25000 }).catch(()=>{});
+await page.waitForTimeout(2500);
+await page.locator('input[placeholder*="Paracetamol"]').fill('paracetamol');
+await page.keyboard.press('Enter');
+await page.waitForSelector('text=/side effects|Side Effects|Uses|uses/i', { timeout: 22000 }).catch(() => console.log('results slow/missing'));
+await page.waitForTimeout(1500);
+await page.screenshot({ path: `${S}/medicine-result.png`, fullPage: true });
+console.log('medicine query done');
+await browser.close();

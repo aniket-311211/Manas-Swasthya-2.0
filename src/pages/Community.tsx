@@ -174,54 +174,36 @@ const CommunityContent: React.FC = () => {
         {/* Content */}
         {activeTab === 'mentor' && (
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Mentor Profile Card */}
-            <div className="lg:col-span-1">
-              <div className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg border border-white/50 p-6 sticky top-24">
-                <div className="text-center mb-6">
-                  <div className="text-6xl mb-3">{displayMentor.avatar}</div>
-                  <div className="relative inline-block">
-                    <h3 className="text-xl font-bold text-gray-900">{displayMentor.name}</h3>
-                    <div
-                      className={`absolute -top-1 -right-8 w-3 h-3 rounded-full ${displayMentor.status === 'online' ? 'bg-green-400' : 'bg-gray-400'
-                        }`}
-                    />
-                  </div>
-                  <div className="flex items-center justify-center space-x-2 mt-2">
-                    <UserCheck size={16} className="text-teal-600" />
-                    <span className="text-sm text-teal-600 font-medium">{displayMentor.badge}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <p className="text-gray-700 text-sm leading-relaxed">{displayMentor.bio}</p>
-
-                  <div className="flex justify-between text-center">
-                    <div>
-                      <p className="text-lg font-bold text-gray-900">{displayMentor.totalSessions}</p>
-                      <p className="text-xs text-gray-600">Sessions</p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-gray-900">{displayMentor.rating}</p>
-                      <p className="text-xs text-gray-600">Rating</p>
+            {/* Mentor Cards */}
+            <div className="lg:col-span-1 space-y-4">
+              {(state.mentors.length > 0 ? state.mentors : [displayMentor]).map((mentor) => (
+                <div key={mentor.id} className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg border border-white/50 p-5">
+                  <div className="flex items-center gap-3">
+                    <div className="text-4xl">{mentor.avatar}</div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="truncate text-base font-bold text-gray-900">{mentor.name}</h3>
+                        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${mentor.status === 'online' ? 'bg-green-400' : 'bg-gray-400'}`} />
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-teal-600">
+                        <UserCheck size={13} /> {mentor.badge}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
-                      <Circle className={`w-2 h-2 ${displayMentor.status === 'online' ? 'bg-green-400' : 'bg-gray-400'} rounded-full`} />
-                      <span>{displayMentor.status === 'online' ? 'Available now' : 'Currently offline'}</span>
-                    </div>
+                  <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-gray-700">{mentor.bio}</p>
+                  <div className="mt-3 flex items-center justify-between text-xs text-gray-600">
+                    <span>{mentor.totalSessions} sessions · ★ {mentor.rating}</span>
+                    <span>{mentor.specialization}</span>
                   </div>
-
                   <Button
-                    onClick={() => setSelectedMentor(displayMentor)}
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white mt-4"
+                    onClick={() => setSelectedMentor(mentor)}
+                    className="mt-4 w-full bg-teal-600 text-white hover:bg-teal-700"
                   >
-                    <MessageCircle className="w-4 h-4 mr-2" />
+                    <MessageCircle className="mr-2 h-4 w-4" />
                     Start Chat
                   </Button>
                 </div>
-              </div>
+              ))}
             </div>
 
             {/* Chat Preview / Info */}

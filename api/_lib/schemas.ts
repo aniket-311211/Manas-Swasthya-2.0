@@ -123,10 +123,15 @@ export const AiAssessmentNext = z.object({
 });
 export type AiAssessmentNextT = z.infer<typeof AiAssessmentNext>;
 
-export const AiMedicine = z.object({
-  clerkId: z.string().min(1),
-  medicineName: z.string().min(1).max(200),
-});
+export const AiMedicine = z
+  .object({
+    clerkId: z.string().min(1),
+    medicineName: z.string().min(1).max(200).optional(),
+    imageBase64: z.string().min(50).max(4_000_000).optional(),
+  })
+  .refine((v) => v.medicineName || v.imageBase64, {
+    message: 'medicineName or imageBase64 required',
+  });
 
 export const AiAnalyze = z.object({
   clerkId: z.string().min(1),

@@ -1,6 +1,19 @@
 // PWA Utility Functions for Nexus Mind Care
 
 export const registerServiceWorker = async (): Promise<ServiceWorkerRegistration | null> => {
+  // In development: unregister any existing service worker and clear caches so
+  // stale production assets never pollute the dev server.
+  if (!import.meta.env.PROD) {
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.unregister()));
+    }
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+    }
+    return null;
+  }
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js', {

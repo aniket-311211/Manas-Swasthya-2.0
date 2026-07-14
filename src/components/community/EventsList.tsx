@@ -85,7 +85,7 @@ const EventsList: React.FC = () => {
                     <div className="p-6">
                         <div className="flex items-start justify-between mb-4">
                             <div className="text-4xl">{event.image}</div>
-                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                            <span className="px-3 py-1 bg-clay/20 text-primary-dark rounded-full text-sm font-medium">
                                 {event.category}
                             </span>
                         </div>
@@ -121,7 +121,7 @@ const EventsList: React.FC = () => {
                             </div>
                             <div className="w-24 bg-gray-200 rounded-full h-2">
                                 <div
-                                    className="bg-orange-400 h-2 rounded-full transition-all"
+                                    className="bg-sage h-2 rounded-full transition-all"
                                     style={{ width: `${(event.participantCount / event.maxParticipants) * 100}%` }}
                                 />
                             </div>
@@ -132,7 +132,7 @@ const EventsList: React.FC = () => {
                             disabled={!event.isRegistered && event.participantCount >= event.maxParticipants}
                             className={`w-full py-3 rounded-xl font-medium transition-colors ${event.isRegistered
                                     ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                    : 'bg-orange-500 text-white hover:bg-orange-600'
+                                    : 'bg-gradient-to-br from-primary-light to-primary-dark text-primary-foreground hover:opacity-90'
                                 }`}
                         >
                             {event.isRegistered ? 'Cancel Registration' :

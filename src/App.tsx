@@ -70,6 +70,7 @@ const App = () => {
   // Sync User with Backend
   useEffect(() => {
     if (isSignedIn && user) {
+      localStorage.setItem('clerk_user_id', user.id);
       const syncUser = async () => {
         try {
           await api.upsertUser({

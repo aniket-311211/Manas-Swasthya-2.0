@@ -1,9 +1,9 @@
 // Service Worker for Nexus Mind Care PWA
 // Version 1.1.0 - Cache clearing update
 
-const CACHE_NAME = "nexus-mind-care-v1.1.0";
-const STATIC_CACHE = "static-cache-v1.1";
-const DYNAMIC_CACHE = "dynamic-cache-v1.1";
+const CACHE_NAME = "manasswasthya-v2.0.0";
+const STATIC_CACHE = "static-cache-v2.0";
+const DYNAMIC_CACHE = "dynamic-cache-v2.0";
 
 // Essential files to cache for offline functionality
 const STATIC_ASSETS = [

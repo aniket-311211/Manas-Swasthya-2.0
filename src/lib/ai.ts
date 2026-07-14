@@ -22,10 +22,13 @@ export function aiNextQuestion(
   });
 }
 
-export function aiMedicine(clerkId: string, medicineName: string): Promise<MedicineAiResult> {
+export function aiMedicine(
+  clerkId: string,
+  input: { medicineName?: string; imageBase64?: string },
+): Promise<MedicineAiResult> {
   return request<MedicineAiResult>('/ai/medicine', {
     method: 'POST',
-    body: JSON.stringify({ clerkId, medicineName }),
+    body: JSON.stringify({ clerkId, ...input }),
   });
 }
 

@@ -99,7 +99,7 @@ export default function Navigation() {
                 type="button"
                 onClick={() => navigate(item.path)}
                 className={cn(
-                  'relative flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-colors',
+                  'relative flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-sm transition-colors',
                   active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
                 )}
               >

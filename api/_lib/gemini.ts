@@ -8,13 +8,28 @@ export function getModel() {
   return genAI.getGenerativeModel({ model: MODEL_ID });
 }
 
+async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (attempt < retries) await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 export async function generateJSON<T>(prompt: string): Promise<T> {
-  const model = getModel();
-  const result = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { responseMimeType: 'application/json' },
+  return withRetry(async () => {
+    const model = getModel();
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: 'application/json' },
+    });
+    return JSON.parse(result.response.text()) as T;
   });
-  return JSON.parse(result.response.text()) as T;
 }
 
 export async function generateText(
@@ -26,9 +41,28 @@ export async function generateText(
     role: m.role === 'assistant' ? ('model' as const) : ('user' as const),
     parts: [{ text: m.content }],
   }));
-  const result = await model.generateContent({
-    contents,
-    systemInstruction: { role: 'system', parts: [{ text: system }] },
+  return withRetry(async () => {
+    const result = await model.generateContent({
+      contents,
+      systemInstruction: { role: 'system', parts: [{ text: system }] },
+    });
+    return result.response.text();
   });
-  return result.response.text();
+}
+
+export async function generateJSONWithImage<T>(prompt: string, imageBase64: string): Promise<T> {
+  const data = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+  return withRetry(async () => {
+    const model = getModel();
+    const result = await model.generateContent({
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data } }],
+        },
+      ],
+      generationConfig: { responseMimeType: 'application/json' },
+    });
+    return JSON.parse(result.response.text()) as T;
+  });
 }
