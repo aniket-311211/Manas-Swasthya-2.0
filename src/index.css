@@ -176,12 +176,20 @@
   }
 
   .text-gradient {
-    background: linear-gradient(100deg, hsl(var(--sage)), hsl(var(--lavender)), hsl(var(--clay)), hsl(var(--sage)));
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shimmer 6s linear infinite;
+    /* Solid fallback so the text is never invisible */
+    color: hsl(var(--sage));
+  }
+
+  @supports ((-webkit-background-clip: text) and (-webkit-text-fill-color: transparent)) {
+    .text-gradient {
+      background: linear-gradient(100deg, hsl(var(--sage)), hsl(var(--lavender)), hsl(var(--clay)), hsl(var(--sage)));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: hsl(var(--sage));
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 6s linear infinite;
+    }
   }
 
   .pill-button {
