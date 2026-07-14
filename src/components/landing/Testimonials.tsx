@@ -46,7 +46,7 @@ export default function Testimonials() {
           <div className="flex">
             {QUOTES.map((q) => (
               <figure key={q.who} className="min-w-0 flex-[0_0_100%] px-2">
-                <blockquote className="relative rounded-3xl border border-white/10 bg-white/[0.05] p-10 text-center backdrop-blur-md">
+                <blockquote className="glass-card relative rounded-3xl p-10 text-center">
                   <Quote className="mx-auto h-6 w-6 text-lavender" aria-hidden="true" />
                   <p className="mt-5 font-display text-xl leading-relaxed text-foreground md:text-2xl">
                     “{q.text}”
@@ -65,7 +65,7 @@ export default function Testimonials() {
               aria-label={`Go to story ${i + 1}`}
               onClick={() => emblaApi?.scrollTo(i)}
               className={`h-2 rounded-full transition-all ${
-                selected === i ? 'w-6 bg-sage' : 'w-2 bg-white/20 hover:bg-white/40'
+                selected === i ? 'w-6 bg-sage' : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
               }`}
             />
           ))}

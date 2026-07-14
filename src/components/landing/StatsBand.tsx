@@ -38,7 +38,7 @@ const STATS = [
 
 export default function StatsBand() {
   return (
-    <section className="border-y border-white/10 bg-white/[0.03]">
+    <section className="border-y border-border/60 bg-card/40">
       <div className="container mx-auto grid grid-cols-2 gap-8 px-6 py-14 md:grid-cols-4">
         {STATS.map((s) => (
           <div key={s.label} className="text-center">

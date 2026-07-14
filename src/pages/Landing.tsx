@@ -40,7 +40,7 @@ export default function Landing() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="dark min-h-screen bg-background font-body text-foreground">
+    <div className="gradient-hero min-h-screen font-body text-foreground">
       <PublicNav />
 
       <section className="relative overflow-hidden">
@@ -102,7 +102,7 @@ export default function Landing() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.85 + i * 0.15 }}
-                className="rounded-2xl border border-white/[0.13] bg-white/[0.07] p-5 text-left backdrop-blur-xl"
+                className="glass-card p-5 text-left"
                 style={
                   reduced
                     ? undefined

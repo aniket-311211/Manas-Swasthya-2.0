@@ -3,7 +3,7 @@ import { Brain } from 'lucide-react';
 
 export default function PublicNav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-background/40 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
         <Link to="/" className="flex items-center gap-2" aria-label="ManasSwasthya home">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary-light to-primary-dark shadow-soft">

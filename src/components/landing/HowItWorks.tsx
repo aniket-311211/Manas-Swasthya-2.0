@@ -32,8 +32,8 @@ export default function HowItWorks() {
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {STEPS.map((s, i) => (
           <Reveal key={s.step} delay={i * 0.12}>
-            <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
-              <span className="font-display text-5xl text-white/10">{s.step}</span>
+            <div className="glass-card relative p-6">
+              <span className="font-display text-5xl text-foreground/10">{s.step}</span>
               <span className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-xl bg-sage/15">
                 <s.icon className="h-5 w-5 text-sage" />
               </span>
