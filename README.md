@@ -46,64 +46,104 @@ features.
 
 ## Demos
 
-In the order the sections were built.
+Every section, in the order it was built. The previews below play automatically.
+Each links to the full-resolution recording.
 
 ### Landing page
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/00-landing-page.mp4
+The public front page.
+
+[![Landing page demo](docs/demo/preview/00-landing-page.gif)](docs/demo/00-landing-page.mp4)
+
+<sub>▶ [Full resolution (00-landing-page.mp4)](docs/demo/00-landing-page.mp4)</sub>
 
 ### 1 · Dashboard
 
-The editorial bento layout: daily ritual, mood check-in, rhythm, wellness score,
-next session, journal snippets, community and resources.
+The editorial bento layout: daily ritual, mood check-in, 90-day rhythm, wellness score, next booked session, journal snippets, community and resources.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/01-dashboard.mp4
+[![1 · Dashboard demo](docs/demo/preview/01-dashboard.gif)](docs/demo/01-dashboard.mp4)
+
+<sub>▶ [Full resolution (01-dashboard.mp4)](docs/demo/01-dashboard.mp4)</sub>
 
 ### 2 · Chat
 
-AI companion with crisis detection running server-side on every message.
+The AI companion. Crisis detection runs server-side on every message, independent of the model, so helplines surface even when the model misses it.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/02-chat.mp4
+[![2 · Chat demo](docs/demo/preview/02-chat.gif)](docs/demo/02-chat.mp4)
+
+<sub>▶ [Full resolution (02-chat.mp4)](docs/demo/02-chat.mp4)</sub>
 
 ### 3 · Journal
 
-Themes, stickers, media, rich text, calendar, and the AI mood read.
+Two themes, stickers, photos, audio clips, rich text and a calendar. The AI reads the mood of an entry and lands it on the calendar, feeding a live mood index.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/03-journal.mp4
+[![3 · Journal demo](docs/demo/preview/03-journal.gif)](docs/demo/03-journal.mp4)
+
+<sub>▶ [Full resolution (03-journal.mp4)](docs/demo/03-journal.mp4)</sub>
 
 ### 4 · Assessment
 
-Fixed item bank, AI follow-ups, radar against last time, answer-latency signal.
+Twelve fixed questions across six domains, AI follow-ups chosen from the answers, a radar against last time and a plain-language "what changed".
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/04-assessment.mp4
+[![4 · Assessment demo](docs/demo/preview/04-assessment.gif)](docs/demo/04-assessment.mp4)
+
+<sub>▶ [Full resolution (04-assessment.mp4)](docs/demo/04-assessment.mp4)</sub>
 
 ### 5 · Booking
 
-Consultant deck, session booking, server-side pricing and fee waivers.
+The consultant deck, session booking, and waiver codes. Pricing is decided entirely server-side — the browser cannot propose a fee.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/05-booking.mp4
+[![5 · Booking demo](docs/demo/preview/05-booking.gif)](docs/demo/05-booking.mp4)
+
+<sub>▶ [Full resolution (05-booking.mp4)](docs/demo/05-booking.mp4)</sub>
 
 ### 6 · Resources
 
-MagicBento cards, category filtering, code search, per-type viewers.
+MagicBento cards, category filtering, search by name or by code, and a viewer per media type — PDF reader, music player, video, article.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/06-resources.mp4
+[![6 · Resources demo](docs/demo/preview/06-resources.gif)](docs/demo/06-resources.mp4)
+
+<sub>▶ [Full resolution (06-resources.mp4)](docs/demo/06-resources.mp4)</sub>
 
 ### 7 · Community
 
-Mentors, peer circles and events behind one sub-navigation.
+Mentors, peer circles and events behind one sub-navigation. Private 1:1 threads, group chat, and a separate mentor sign-in.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/07-community.mp4
+[![7 · Community demo](docs/demo/preview/07-community.gif)](docs/demo/07-community.mp4)
+
+<sub>▶ [Full resolution (07-community.mp4)](docs/demo/07-community.mp4)</sub>
 
 ### 8 · Medicine AI
 
-Photo or name in, a structured medicine report out, with a daily allowance.
+Photograph a strip or type a name; get what it treats, how it is taken, and what would mean stopping. Five checks a day.
 
-https://github.com/aniket-311211/Manas-Swasthya-2.0/raw/main/docs/demo/08-medicine-ai.mp4
+[![8 · Medicine AI demo](docs/demo/preview/08-medicine-ai.gif)](docs/demo/08-medicine-ai.mp4)
 
-> GitHub serves these as downloads rather than inline players. To get inline
-> playback, drag each file into a GitHub issue comment and paste the resulting
-> `user-attachments` URL back into this README.
+<sub>▶ [Full resolution (08-medicine-ai.mp4)](docs/demo/08-medicine-ai.mp4)</sub>
+
+<details>
+<summary><b>Why these are GIFs, and how to get real video players</b></summary>
+
+<br>
+
+GitHub strips `<video>` tags out of README files, so a link to an `.mp4` in the
+repository renders as a link and nothing else. Inline players only work for
+files uploaded through GitHub's own attachment flow.
+
+The previews above are therefore GIFs — 480px, 8 fps, first 8 seconds — which do
+render inline. The recordings have no audio, so nothing is lost but resolution.
+Full-quality H.264 versions sit beside them in `docs/demo/`.
+
+To get native players with seek bars, about ten minutes of work:
+
+1. Open a new issue in this repository (do not submit it).
+2. Drag `docs/demo/01-dashboard.mp4` into the comment box and wait for upload.
+3. Copy the `https://github.com/user-attachments/assets/…` URL it produces.
+4. Paste that URL **on its own line** in this README, replacing the image line
+   for that section.
+5. Repeat for the other eight, then close the issue without submitting.
+
+</details>
 
 ---
 
