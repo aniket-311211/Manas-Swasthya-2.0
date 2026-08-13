@@ -46,14 +46,14 @@ features.
 
 ## Demos
 
-Every section, in the order it was built. The previews below play automatically.
-Each links to the full-resolution recording.
+Every section, in the order it was built. The previews play automatically at
+full resolution — click any of them for the H.264 original.
 
 ### Landing page
 
 The public front page.
 
-[![Landing page demo](docs/demo/preview/00-landing-page.gif)](docs/demo/00-landing-page.mp4)
+[![Landing page demo](docs/demo/preview/00-landing-page.webp)](docs/demo/00-landing-page.mp4)
 
 <sub>▶ [Full resolution (00-landing-page.mp4)](docs/demo/00-landing-page.mp4)</sub>
 
@@ -61,7 +61,7 @@ The public front page.
 
 The editorial bento layout: daily ritual, mood check-in, 90-day rhythm, wellness score, next booked session, journal snippets, community and resources.
 
-[![1 · Dashboard demo](docs/demo/preview/01-dashboard.gif)](docs/demo/01-dashboard.mp4)
+[![1 · Dashboard demo](docs/demo/preview/01-dashboard.webp)](docs/demo/01-dashboard.mp4)
 
 <sub>▶ [Full resolution (01-dashboard.mp4)](docs/demo/01-dashboard.mp4)</sub>
 
@@ -69,7 +69,7 @@ The editorial bento layout: daily ritual, mood check-in, 90-day rhythm, wellness
 
 The AI companion. Crisis detection runs server-side on every message, independent of the model, so helplines surface even when the model misses it.
 
-[![2 · Chat demo](docs/demo/preview/02-chat.gif)](docs/demo/02-chat.mp4)
+[![2 · Chat demo](docs/demo/preview/02-chat.webp)](docs/demo/02-chat.mp4)
 
 <sub>▶ [Full resolution (02-chat.mp4)](docs/demo/02-chat.mp4)</sub>
 
@@ -77,7 +77,7 @@ The AI companion. Crisis detection runs server-side on every message, independen
 
 Two themes, stickers, photos, audio clips, rich text and a calendar. The AI reads the mood of an entry and lands it on the calendar, feeding a live mood index.
 
-[![3 · Journal demo](docs/demo/preview/03-journal.gif)](docs/demo/03-journal.mp4)
+[![3 · Journal demo](docs/demo/preview/03-journal.webp)](docs/demo/03-journal.mp4)
 
 <sub>▶ [Full resolution (03-journal.mp4)](docs/demo/03-journal.mp4)</sub>
 
@@ -85,7 +85,7 @@ Two themes, stickers, photos, audio clips, rich text and a calendar. The AI read
 
 Twelve fixed questions across six domains, AI follow-ups chosen from the answers, a radar against last time and a plain-language "what changed".
 
-[![4 · Assessment demo](docs/demo/preview/04-assessment.gif)](docs/demo/04-assessment.mp4)
+[![4 · Assessment demo](docs/demo/preview/04-assessment.webp)](docs/demo/04-assessment.mp4)
 
 <sub>▶ [Full resolution (04-assessment.mp4)](docs/demo/04-assessment.mp4)</sub>
 
@@ -93,7 +93,7 @@ Twelve fixed questions across six domains, AI follow-ups chosen from the answers
 
 The consultant deck, session booking, and waiver codes. Pricing is decided entirely server-side — the browser cannot propose a fee.
 
-[![5 · Booking demo](docs/demo/preview/05-booking.gif)](docs/demo/05-booking.mp4)
+[![5 · Booking demo](docs/demo/preview/05-booking.webp)](docs/demo/05-booking.mp4)
 
 <sub>▶ [Full resolution (05-booking.mp4)](docs/demo/05-booking.mp4)</sub>
 
@@ -101,7 +101,7 @@ The consultant deck, session booking, and waiver codes. Pricing is decided entir
 
 MagicBento cards, category filtering, search by name or by code, and a viewer per media type — PDF reader, music player, video, article.
 
-[![6 · Resources demo](docs/demo/preview/06-resources.gif)](docs/demo/06-resources.mp4)
+[![6 · Resources demo](docs/demo/preview/06-resources.webp)](docs/demo/06-resources.mp4)
 
 <sub>▶ [Full resolution (06-resources.mp4)](docs/demo/06-resources.mp4)</sub>
 
@@ -109,7 +109,7 @@ MagicBento cards, category filtering, search by name or by code, and a viewer pe
 
 Mentors, peer circles and events behind one sub-navigation. Private 1:1 threads, group chat, and a separate mentor sign-in.
 
-[![7 · Community demo](docs/demo/preview/07-community.gif)](docs/demo/07-community.mp4)
+[![7 · Community demo](docs/demo/preview/07-community.webp)](docs/demo/07-community.mp4)
 
 <sub>▶ [Full resolution (07-community.mp4)](docs/demo/07-community.mp4)</sub>
 
@@ -117,24 +117,34 @@ Mentors, peer circles and events behind one sub-navigation. Private 1:1 threads,
 
 Photograph a strip or type a name; get what it treats, how it is taken, and what would mean stopping. Five checks a day.
 
-[![8 · Medicine AI demo](docs/demo/preview/08-medicine-ai.gif)](docs/demo/08-medicine-ai.mp4)
+[![8 · Medicine AI demo](docs/demo/preview/08-medicine-ai.webp)](docs/demo/08-medicine-ai.mp4)
 
 <sub>▶ [Full resolution (08-medicine-ai.mp4)](docs/demo/08-medicine-ai.mp4)</sub>
 
 <details>
-<summary><b>Why these are GIFs, and how to get real video players</b></summary>
+<summary><b>Why these are WebP, and how to get real video players</b></summary>
 
 <br>
 
 GitHub strips `<video>` tags out of README files, so a link to an `.mp4` in the
-repository renders as a link and nothing else. Inline players only work for
-files uploaded through GitHub's own attachment flow.
+repository renders as a link and nothing else. Inline players only exist for
+files uploaded through GitHub's own attachment flow, which cannot be scripted.
 
-The previews above are therefore GIFs — 480px, 8 fps, first 8 seconds — which do
-render inline. The recordings have no audio, so nothing is lost but resolution.
-Full-quality H.264 versions sit beside them in `docs/demo/`.
+The previews are therefore **animated WebP** — native resolution, 15 fps, full
+length, 24-bit colour. GitHub renders these inline and animated.
 
-To get native players with seek bars, about ten minutes of work:
+GIF was tried first and cannot do this. The community clip as a 1080px GIF is
+**101 MB** against **11 MB** as WebP, because GIF is limited to a 256-colour
+palette and compresses each frame independently. Worse, a GIF that size decodes
+entirely into memory — over a gigabyte for that one file — so the page would
+stall on load. Dropping GIF to a size that renders means dropping to 480px and
+64 colours, which is what the first version of this README did, and the text was
+unreadable.
+
+The recordings have no audio, so resolution is the only thing WebP gives up
+against the MP4 — and at native resolution it gives up very little.
+
+To get native players with a seek bar, about ten minutes:
 
 1. Open a new issue in this repository (do not submit it).
 2. Drag `docs/demo/01-dashboard.mp4` into the comment box and wait for upload.
