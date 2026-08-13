@@ -13,13 +13,18 @@ import chatRooms from './api/chat/rooms';
 import chatMessages from './api/chat/messages';
 import communityGroups from './api/community/groups';
 import communityJoin from './api/community/join';
+import communityMessages from './api/community/messages';
 import events from './api/events/index';
 import mentors from './api/mentors/index';
+import mentorAuth from './api/mentors/auth';
+import mentorThreads from './api/mentors/threads';
+import mentorSignup from './api/mentors/signup';
+import quotes from './api/quotes/index';
+import bookings from './api/bookings/index';
 import aiChat from './api/ai/chat';
 import aiAssessment from './api/ai/assessment';
 import aiMedicine from './api/ai/medicine';
 import aiAnalyze from './api/ai/analyze';
-import aiAdvisory from './api/ai/advisory';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -47,13 +52,18 @@ app.all('/api/chat/rooms', wrap(chatRooms));
 app.all('/api/chat/messages', wrap(chatMessages));
 app.all('/api/community/groups', wrap(communityGroups));
 app.all('/api/community/join', wrap(communityJoin));
+app.all('/api/community/messages', wrap(communityMessages));
 app.all('/api/events', wrap(events));
 app.all('/api/mentors', wrap(mentors));
+app.all('/api/mentors/auth', wrap(mentorAuth));
+app.all('/api/mentors/threads', wrap(mentorThreads));
+app.all('/api/mentors/signup', wrap(mentorSignup));
+app.all('/api/quotes', wrap(quotes));
+app.all('/api/bookings', wrap(bookings));
 app.all('/api/ai/chat', wrap(aiChat));
 app.all('/api/ai/assessment', wrap(aiAssessment));
 app.all('/api/ai/medicine', wrap(aiMedicine));
 app.all('/api/ai/analyze', wrap(aiAnalyze));
-app.all('/api/ai/advisory', wrap(aiAdvisory));
 
 const PORT = Number(process.env.PORT ?? 3001);
 app.listen(PORT, () => {

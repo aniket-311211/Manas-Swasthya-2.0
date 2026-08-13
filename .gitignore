@@ -62,3 +62,40 @@ graphify-out/cache/
 graphify-out/
 npm.log
 *.log
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Local tooling artefacts. None of this is part of the application, and
+# .claude/worktrees alone is ~1 GB of duplicated checkouts with their own
+# node_modules — it must never reach a clone.
+# ─────────────────────────────────────────────────────────────────────────────
+.claude/
+.claude-flow/
+.agents/
+.codex/
+agentdb.rvf
+agentdb.rvf.lock
+claude-flow.config.json
+graphify-out/
+AGENTS.md
+CLAUDE.md
+dashboard-redesign-execution-plan.txt
+
+# Local agent scratch database
+data/memory/
+
+# Source video masters. The published copies are the re-encoded MP4s in
+# docs/demo — keeping both would double the repository for no benefit.
+demo vids/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Vite writes these while resolving the config; they are never source.
+vitest.config.ts.timestamp-*
+vite.config.ts.timestamp-*
+
+# Superseded by docs/SETUP.md
+# Stale lockfile from a package manager this project does not use
+bun.lockb
+skills-lock.json

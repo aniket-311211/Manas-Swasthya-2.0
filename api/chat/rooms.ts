@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma';
 import { ok, parseBody, methodGuard, queryStr, withErrors } from '../_lib/http';
 import { RoomCreate } from '../_lib/schemas';
+import { requireVerifiedUser } from '../_lib/clerkAuth';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!methodGuard(req, res, ['GET', 'POST'])) return;
@@ -9,45 +10,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     if (req.method === 'POST') {
       const body = parseBody(req, res, RoomCreate);
       if (!body) return;
-      let participantConnect: { id: string }[] = [];
-      if (body.clerkId) {
-        const user = await prisma.user.findUnique({ where: { clerkId: body.clerkId } });
-        if (user) participantConnect = [{ id: user.id }];
-      }
+      // The creator is the caller, proven. `mentorId`/`studentId` used to be
+      // whatever the request said, so anyone could manufacture a "mentor" room
+      // between two people they chose. Mentor threads are created by
+      // api/mentors/threads.ts, which checks both sides; this route only makes
+      // rooms the caller is in.
+      const user = await requireVerifiedUser(req, res);
+      if (!user) return;
       const room = await prisma.chatRoom.create({
         data: {
-          type: body.type,
+          type: body.type === 'mentor' ? 'group' : body.type,
           name: body.name ?? null,
           description: body.description ?? null,
-          mentorId: body.mentorId ?? null,
-          studentId: body.studentId ?? null,
+          mentorId: null,
+          studentId: body.type === 'private' ? user.id : null,
           topic: body.topic ?? null,
           tags: body.tags,
           status: 'active',
-          participants: participantConnect.length > 0 ? { connect: participantConnect } : undefined,
+          participants: { connect: [{ id: user.id }] },
         },
-        include: { participants: { select: { id: true, clerkId: true, firstName: true, lastName: true } } },
+        include: { participants: { select: { id: true, firstName: true, lastName: true } } },
       });
       ok(res, room, 201);
       return;
     }
-    const clerkId = queryStr(req, 'clerkId');
+    // Was: an empty `where` when no clerkId was supplied, so a bare GET
+    // returned EVERY room in the system with its last message and the full
+    // participant list — Clerk ids and real names included. That single request
+    // enumerated the user base and previewed every conversation.
+    const user = await requireVerifiedUser(req, res);
+    if (!user) return;
+
     const type = queryStr(req, 'type');
-    const where: { type?: string; participants?: { some: { id: string } } } = {};
-    if (type) where.type = type;
-    if (clerkId) {
-      const user = await prisma.user.findUnique({ where: { clerkId } });
-      if (!user) {
-        ok(res, []);
-        return;
-      }
-      where.participants = { some: { id: user.id } };
-    }
     const rooms = await prisma.chatRoom.findMany({
-      where,
+      where: {
+        ...(type ? { type } : {}),
+        // Always scoped to the caller. Not optional any more.
+        participants: { some: { id: user.id } },
+      },
       include: {
         messages: { orderBy: { timestamp: 'desc' }, take: 1 },
-        participants: { select: { id: true, clerkId: true, firstName: true, lastName: true } },
+        participants: { select: { id: true, firstName: true, lastName: true } },
       },
       orderBy: { updatedAt: 'desc' },
     });

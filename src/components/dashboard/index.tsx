@@ -1,85 +1,90 @@
 import { useUser } from '@clerk/clerk-react';
-import { useQuery } from '@tanstack/react-query';
-import { Flame } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Reveal from '@/components/visual/Reveal';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import MoodTrendCard from './MoodTrendCard';
+import DailyRitual from './DailyRitual';
+import MoodCheckIn from './MoodCheckIn';
+import MoodRhythmCard from './MoodRhythmCard';
+import NextStepCard from './NextStepCard';
 import WellnessScoreCard from './WellnessScoreCard';
-import QuickActions from './QuickActions';
-import RecentActivity from './RecentActivity';
-import { api } from '@/lib/api';
-import { calcStreak } from '@/lib/streak';
+// Bookings are real now, so this slot shows the actual next appointment
+// rather than the mentor suggestion that stood in for it.
+import UpcomingSessionCard from './UpcomingSessionCard';
+import ResourceShelfCard from './ResourceShelfCard';
+import QuickThoughtsCard from './QuickThoughtsCard';
+import CommunityCard from './CommunityCard';
 
-function greeting(): string {
-  const h = new Date().getHours();
-  if (h < 5) return 'Still up';
-  if (h < 12) return 'Good morning';
-  if (h < 17) return 'Good afternoon';
-  return 'Good evening';
-}
+
+
 
 export default function Dashboard() {
   const { user } = useUser();
   const clerkId = user?.id ?? '';
 
-  const { data: moods = [] } = useQuery({
-    queryKey: ['mood', clerkId],
-    queryFn: () => api.getMoodHistory(clerkId),
-    enabled: !!clerkId,
-  });
-
-  const streak = calcStreak(moods.map((m) => m.createdAt));
-
-  if (!user) return null;
 
   return (
-    <div className="gradient-hero min-h-full">
-      <div className="container mx-auto px-4 py-8 lg:px-6">
-        <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h1 className="font-display text-3xl text-foreground md:text-4xl">
-                {greeting()}, {user.firstName ?? 'friend'}
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {new Date().toLocaleDateString('en-IN', {
-                  weekday: 'long',
-                  day: 'numeric',
-                  month: 'long',
-                })}
-              </p>
-            </div>
-            {streak > 0 && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-clay/15 px-4 py-1.5 text-sm text-clay">
-                <Flame className="h-4 w-4" /> {streak}-day streak
-              </span>
-            )}
+    <div className="mx-auto w-full max-w-[1320px] px-6 py-8 lg:px-10">
+      <Reveal>
+        <ErrorBoundary label="today's ritual">
+          <DailyRitual clerkId={clerkId} />
+        </ErrorBoundary>
+      </Reveal>
+
+      {/* Mood check-in + next step */}
+      <Reveal delay={0.05} className="mt-[22px]">
+        <div className="flex flex-col gap-[18px] lg:flex-row">
+          <section id="today" aria-label="Today's check-in" className="scroll-mt-24 flex-1">
+            <ErrorBoundary label="today's mood check-in">
+              <MoodCheckIn clerkId={clerkId} />
+            </ErrorBoundary>
+          </section>
+          <div className="lg:w-[300px]">
+            <ErrorBoundary label="your next step">
+              <NextStepCard clerkId={clerkId} />
+            </ErrorBoundary>
           </div>
-        </Reveal>
-
-        <Reveal delay={0.1} className="mt-8">
-          <ErrorBoundary label="quick actions">
-            <QuickActions />
-          </ErrorBoundary>
-        </Reveal>
-
-        <div className="mt-6 grid gap-4 lg:grid-cols-3">
-          <Reveal delay={0.15} className="lg:col-span-2">
-            <ErrorBoundary label="your mood trend">
-              <MoodTrendCard clerkId={clerkId} />
-            </ErrorBoundary>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <ErrorBoundary label="your wellness score">
-              <WellnessScoreCard clerkId={clerkId} />
-            </ErrorBoundary>
-          </Reveal>
         </div>
+      </Reveal>
 
-        <Reveal delay={0.25} className="mt-6">
-          <ErrorBoundary label="recent activity">
-            <RecentActivity clerkId={clerkId} />
+      {/* Editorial bento */}
+      <div className="mt-[22px] grid grid-cols-1 gap-[18px] lg:grid-cols-12">
+        <Reveal delay={0.1} className="lg:col-span-8">
+          <section id="rhythm" aria-label="Your mood rhythm" className="h-full scroll-mt-24">
+            <ErrorBoundary label="your mood rhythm">
+              <MoodRhythmCard clerkId={clerkId} />
+            </ErrorBoundary>
+          </section>
+        </Reveal>
+
+        <Reveal delay={0.15} className="lg:col-span-4">
+          <ErrorBoundary label="your wellness score">
+            <WellnessScoreCard clerkId={clerkId} />
           </ErrorBoundary>
+        </Reveal>
+
+        <Reveal delay={0.2} className="lg:col-span-4">
+          <ErrorBoundary label="your next session">
+            <UpcomingSessionCard clerkId={clerkId} />
+          </ErrorBoundary>
+        </Reveal>
+
+        <Reveal delay={0.25} className="lg:col-span-4">
+          <ErrorBoundary label="your recent journal entries">
+            <QuickThoughtsCard clerkId={clerkId} />
+          </ErrorBoundary>
+        </Reveal>
+
+        <Reveal delay={0.3} className="lg:col-span-8">
+          <div className="flex flex-col gap-[18px] sm:flex-row">
+            <ErrorBoundary label="community events">
+              <CommunityCard clerkId={clerkId} />
+            </ErrorBoundary>
+            <div className="flex-1">
+              <ErrorBoundary label="your resources">
+                <ResourceShelfCard />
+              </ErrorBoundary>
+            </div>
+          </div>
         </Reveal>
       </div>
     </div>

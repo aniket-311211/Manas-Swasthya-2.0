@@ -50,15 +50,25 @@ export async function generateText(
   });
 }
 
-export async function generateJSONWithImage<T>(prompt: string, imageBase64: string): Promise<T> {
-  const data = imageBase64.replace(/^data:image\/[a-z]+;base64,/, '');
+/**
+ * `mimeType` defaults to JPEG only because existing callers pass a data URL and
+ * relied on that. Pass the real type when you know it — a PNG announced as a
+ * JPEG is a worse image for the model to read, and this endpoint is asked to
+ * make out small print on a foil strip.
+ */
+export async function generateJSONWithImage<T>(
+  prompt: string,
+  imageBase64: string,
+  mimeType = 'image/jpeg',
+): Promise<T> {
+  const data = imageBase64.replace(/^data:image\/[a-z0-9.+-]+;base64,/i, '');
   return withRetry(async () => {
     const model = getModel();
     const result = await model.generateContent({
       contents: [
         {
           role: 'user',
-          parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data } }],
+          parts: [{ text: prompt }, { inlineData: { mimeType, data } }],
         },
       ],
       generationConfig: { responseMimeType: 'application/json' },

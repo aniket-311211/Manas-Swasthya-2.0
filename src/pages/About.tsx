@@ -12,7 +12,7 @@ const About = () => {
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
-          <h1 className="text-4xl font-bold mb-4">About Manas Svasthya</h1>
+          <h1 className="text-4xl font-bold mb-4">About Manas Swasthya</h1>
           <p className="text-xl text-muted-foreground">
             Your comprehensive mental wellness companion for college life
           </p>
@@ -23,7 +23,7 @@ const About = () => {
           <Card className="p-8">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Manas Svasthya is dedicated to supporting college students through their mental health journey. 
+              Manas Swasthya is dedicated to supporting college students through their mental health journey. 
               We understand the unique challenges of academic life, social pressures, and the transition 
               to independence. Our platform combines AI-powered support, peer connections, and 
               evidence-based resources to create a comprehensive wellness ecosystem.
@@ -167,7 +167,7 @@ const About = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3 text-primary">Our Commitment</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Manas Svasthya is built with students in mind. We understand the unique challenges 
+                    Manas Swasthya is built with students in mind. We understand the unique challenges 
                     of college life and are committed to providing accessible, effective mental health 
                     support that fits into your busy schedule.
                   </p>
@@ -188,7 +188,7 @@ const About = () => {
           <Card className="p-8 text-center">
             <h2 className="text-2xl font-semibold mb-4">Ready to Start Your Journey?</h2>
             <p className="text-muted-foreground mb-6">
-              Join thousands of students who have found support and community through Manas Svasthya
+              Join thousands of students who have found support and community through Manas Swasthya
             </p>
             <Link to="/sign-up">
               <Button size="lg" className="px-8">

@@ -35,7 +35,11 @@ export async function withErrors(res: VercelResponse, fn: () => Promise<void>): 
   try {
     await fn();
   } catch (err) {
+    // The message goes to the log, not to the caller. Returning `err.message`
+    // turned this into an oracle — "User not found for clerkId …" confirmed
+    // whether any given id existed — and leaked Prisma constraint and schema
+    // details to anyone who could provoke an exception.
     console.error(err);
-    fail(res, err instanceof Error ? err.message : 'Internal server error', 500);
+    fail(res, 'Something went wrong on our side.', 500);
   }
 }

@@ -3,11 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { AssessmentProvider } from "@/contexts/AssessmentContext";
 import ThemeProvider from "@/components/theme/ThemeProvider";
-import Footer from "@/components/Footer";
-import Navigation from "./components/Navigation";
+import AppShell from "./components/shell/AppShell";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import OfflineIndicator from "./components/OfflineIndicator";
 import Landing from "./pages/Landing";
@@ -19,7 +18,7 @@ import SignUpPage from "./auth/sign-up/[[...sign-up]]/page";
 import SignOutPage from "./auth/sign-out/page";
 import { registerServiceWorker, addOnlineStatusListener } from "./utils/pwa";
 import { useEffect, lazy, Suspense } from "react";
-import { api } from '@/lib/api';
+import { api, setTokenProvider } from '@/lib/api';
 
 // Lazy load heavy components
 const UserDashboard = lazy(() => import("./components/UserDashboard"));
@@ -28,8 +27,9 @@ const Chat = lazy(() => import("./pages/Chat"));
 const Assessment = lazy(() => import("./pages/Assessment"));
 const Resources = lazy(() => import("./pages/Resources"));
 const Community = lazy(() => import("./pages/Community"));
-const MedicineAI = lazy(() => import("./components/MedicineAI"));
+const Medicine = lazy(() => import("./pages/Medicine"));
 const Journal = lazy(() => import("./pages/Journal"));
+const ScrollyVideoDemo = lazy(() => import("./pages/ScrollyVideoDemo"));
 
 const queryClient = new QueryClient();
 
@@ -44,7 +44,14 @@ const PageLoader = () => (
 );
 
 // Protected Route Component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({
+  children,
+  backdrop = false,
+}: {
+  children: React.ReactNode;
+  /** Opt into the animated iridescence field. Dashboard only for now. */
+  backdrop?: boolean;
+}) => {
   const { isSignedIn, isLoaded } = useUser();
 
   if (!isLoaded) {
@@ -55,17 +62,22 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/" replace />;
   }
 
-  return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Navigation />
-      <main className="flex-1 pt-16">{children}</main>
-      <Footer />
-    </div>
-  );
+  // Every authenticated page shares one shell. AppShell renders the <main>
+  // landmark, so pages must not add their own.
+  return <AppShell backdrop={backdrop}>{children}</AppShell>;
 };
 
 const App = () => {
   const { isSignedIn, isLoaded, user } = useUser();
+  const { getToken } = useAuth();
+
+  // Every API call carries a signed Clerk token from here on, so the server can
+  // verify who is calling instead of trusting a user id in the request body.
+  // Registered before the sync below, which is itself an API call.
+  useEffect(() => {
+    setTokenProvider(() => getToken());
+    return () => setTokenProvider(null);
+  }, [getToken]);
 
   // Sync User with Backend
   useEffect(() => {
@@ -140,6 +152,7 @@ const App = () => {
                   }
                 />
                 <Route path="/about" element={<About />} />
+                <Route path="/scrolly-video" element={<ScrollyVideoDemo />} />
                 <Route path="/sign-in/*" element={<SignInPage />} />
                 <Route path="/sign-up/*" element={<SignUpPage />} />
                 <Route path="/sign-out" element={<SignOutPage />} />
@@ -148,7 +161,7 @@ const App = () => {
                 <Route
                   path="/dashboard"
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute backdrop>
                       <UserDashboard />
                     </ProtectedRoute>
                   }
@@ -201,11 +214,15 @@ const App = () => {
                     </ProtectedRoute>
                   }
                 />
+                {/* Mentors moved inside the community page. Kept as a redirect
+                    rather than deleted, so an old link or bookmark still lands
+                    on the mentors tab instead of a 404. */}
+                <Route path="/mentors" element={<Navigate to="/community?tab=mentors" replace />} />
                 <Route
                   path="/medicine"
                   element={
                     <ProtectedRoute>
-                      <MedicineAI />
+                      <Medicine />
                     </ProtectedRoute>
                   }
                 />

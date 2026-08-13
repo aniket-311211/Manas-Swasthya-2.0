@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { prisma } from '../_lib/prisma';
 import { ok, fail, parseBody, methodGuard, withErrors } from '../_lib/http';
 import { MentorAction } from '../_lib/schemas';
+import { LOCKED_PASSWORD } from '../_lib/mentorAuth';
 
 const MENTOR_SELECT = {
   id: true,
@@ -22,22 +23,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       const body = parseBody(req, res, MentorAction);
       if (!body) return;
       if (body.action === 'login') {
-        const mentor = await prisma.mentor.findUnique({ where: { email: body.email } });
-        if (!mentor || mentor.password !== body.password) {
-          fail(res, 'Invalid credentials', 401);
-          return;
-        }
-        await prisma.mentor.update({ where: { id: mentor.id }, data: { status: 'online' } });
-        const { password: _pw, ...mentorData } = mentor;
-        void _pw;
-        ok(res, { mentor: { ...mentorData, status: 'online' } });
+        // Removed. This compared `mentor.password !== body.password` in
+        // plaintext and issued no session. Login lives in api/mentors/auth.ts
+        // and uses bcrypt plus a MentorSession token.
+        fail(res, 'Use /api/mentors/auth to sign in.', 410);
         return;
       }
-      await prisma.mentor.update({ where: { id: body.mentorId }, data: { status: 'offline' } });
-      ok(res, { loggedOut: true });
+      // Was: `prisma.mentor.update` on a caller-supplied id with no session,
+      // so an anonymous request could mark any mentor offline in the directory.
+      // Real logout revokes the session token in api/mentors/auth.ts.
+      fail(res, 'Use /api/mentors/auth to sign out.', 410);
       return;
     }
-    const mentors = await prisma.mentor.findMany({ select: MENTOR_SELECT });
+    // Retired accounts stayed in this list, which is why the directory showed
+    // duplicate people — an old row and its replacement under the same name.
+    const mentors = await prisma.mentor.findMany({
+      where: { password: { not: LOCKED_PASSWORD } },
+      orderBy: { name: 'asc' },
+      select: MENTOR_SELECT,
+    });
     ok(res, mentors);
   });
 }

@@ -28,7 +28,9 @@ model User {
   
   // New Relations
   journalEntries JournalEntry[]
+  bookings       Booking[]
   medicineAnalyses MedicineAnalysis[]
+  aiUsage     AiUsage[]
   chatRooms      ChatRoom[]    @relation("ChatParticipants")
 
   @@map("users")
@@ -79,8 +81,16 @@ model UserActivity {
 // Chat messages for AI conversations
 model ChatMessage {
   id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // A message is authored by EITHER a student or a mentor. userId was required
+  // and FK'd to User, which made it impossible for a mentor to post at all —
+  // the reason community chat could never really work.
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentorId    String?
+  mentor      Mentor?  @relation(fields: [mentorId], references: [id], onDelete: SetNull)
+  /// Denormalised so a message keeps its author's name if the account goes.
+  authorName  String?
   
   // Link to a chat room
   roomId      String?  
@@ -131,6 +141,35 @@ model MoodEntry {
 }
 
 // Medicine Analysis History
+/**
+ * How much of a metered AI feature somebody has used today.
+ *
+ * The old cap lived in a Map inside the API process: it reset on every cold
+ * start, was not shared between serverless instances, and keyed on an
+ * unverified id. None of that is a quota. This is one row per user per feature
+ * per day, so the count survives restarts and is the same number everywhere.
+ *
+ * `day` is a plain 'YYYY-MM-DD' string in Asia/Kolkata rather than a timestamp,
+ * so "today" means the same thing to a student in India as it does to the
+ * database, whatever region the function is running in.
+ */
+model AiUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  feature   String   // 'medicine'
+  day       String   // 'YYYY-MM-DD', Asia/Kolkata
+  count     Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, feature, day])
+  @@index([userId, feature])
+  @@map("ai_usage")
+}
+
 model MedicineAnalysis {
   id          String   @id @default(cuid())
   userId      String
@@ -197,6 +236,12 @@ model ChatRoom {
   updatedAt   DateTime @updatedAt
   
   @@map("chat_rooms")
+
+  // One thread per student-mentor pair, enforced by the database rather than
+  // by a read-then-write in application code — two concurrent upserts both saw
+  // "no thread yet" and each created one. Postgres treats NULLs as distinct in
+  // a unique index, so group rooms (both columns null) are unaffected.
+  @@unique([mentorId, studentId])
 }
 
 // Mentor model for authenticated mentors
@@ -213,6 +258,9 @@ model Mentor {
   status      String   @default("offline") // 'online', 'offline', 'away'
   totalSessions Int    @default(0)
   rating      Float    @default(5.0)
+
+  sessions    MentorSession[]
+  messages    ChatMessage[]
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -221,6 +269,25 @@ model Mentor {
 }
 
 // Events for community activities
+// Mentor sessions. A login issues a random opaque token stored here; every
+// mentor-only request carries it and is checked against this table.
+//
+// WHY A TABLE AND NOT A JWT: revocation. A mentor who logs out, or an account
+// that has to be cut off, must stop working immediately — with a stateless JWT
+// it keeps working until it expires. There is also no signing secret in .env to
+// sign one with.
+model MentorSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  mentorId  String
+  mentor    Mentor   @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([mentorId])
+  @@map("mentor_sessions")
+}
+
 model Event {
   id          String   @id @default(cuid())
   title       String
@@ -242,6 +309,40 @@ model Event {
   updatedAt   DateTime @updatedAt
   
   @@map("events")
+}
+
+// Consultation bookings with a mentor.
+//
+// Fee waiver is decided and stamped SERVER-SIDE at creation time — the client
+// sends a code or a registration number, never a price. `feeWaived` plus
+// `waiverReason` are the record of what was granted and why.
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mentorId    String
+  mentorName  String   // Denormalised so a past booking survives a mentor edit
+  mode        String   @default("video") // 'video' | 'audio' | 'chat' | 'in_person'
+
+  scheduledAt DateTime
+  durationMin Int      @default(45)
+
+  status      String   @default("scheduled") // 'scheduled' | 'completed' | 'cancelled'
+  note        String?
+
+  // Fees, in paise to avoid float money.
+  feePaise    Int      @default(0)
+  feeWaived   Boolean  @default(false)
+  waiverReason String? // 'coupon' | 'student' | null
+  couponCode  String?  // Which code was redeemed, for reconciliation
+  registrationNo String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, scheduledAt])
+  @@map("bookings")
 }
 
 // Event registrations

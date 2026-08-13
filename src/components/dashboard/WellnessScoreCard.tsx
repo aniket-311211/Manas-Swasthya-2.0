@@ -1,83 +1,80 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import GlassCard from '@/components/visual/GlassCard';
 import { api } from '@/lib/api';
 import { wellnessScore } from '@/lib/wellness';
+import { sortByCreatedAt } from './moodInsights';
+import { GLASS } from '@/components/shell/theme';
 
+function delta(current: number, previous: number) {
+  const diff = current - previous;
+  // Direction lives in the words: the arrow is decorative and colour is never the only signal.
+  if (diff === 0) return { arrow: '→', text: 'No change since your last assessment', tone: 'text-[#5A6472]' };
+  if (diff > 0) return { arrow: '↑', text: `Up ${diff} since your last assessment`, tone: 'text-[#1B2430]' };
+  return { arrow: '↓', text: `Down ${-diff} since your last assessment`, tone: 'text-[#C0533F]' };
+}
 
+const shell = `flex h-full flex-col ${GLASS} p-6`;
 
 export default function WellnessScoreCard({ clerkId }: { clerkId: string }) {
-  const navigate = useNavigate();
-  const { data: assessments = [], isLoading } = useQuery({
+  const { data: assessments = [], isLoading, isError, isFetching, refetch } = useQuery({
     queryKey: ['assessments', clerkId],
     queryFn: () => api.getAssessments(clerkId),
+    enabled: !!clerkId,
   });
 
   if (isLoading) {
-    return <GlassCard className="h-full animate-pulse p-5"><div className="h-24 rounded-xl bg-muted/50" /></GlassCard>;
+    return <div className={shell}><div className="h-24 animate-pulse rounded-xl bg-white/50" /></div>;
   }
 
-  if (assessments.length === 0) {
+  if (isError) {
     return (
-      <GlassCard className="flex h-full flex-col justify-between p-5">
-        <p className="text-sm text-muted-foreground">Wellness score</p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Take your first assessment to see your score.
-        </p>
-        <button
-          type="button"
-          onClick={() => navigate('/assessment')}
-          className="pill-button mt-4 self-start bg-gradient-to-br from-primary-light to-primary-dark text-xs text-primary-foreground"
-        >
-          Start assessment
+      <div className={shell}>
+        <h2 className="text-sm text-[#5A6472]">Wellness reflection</h2>
+        <p role="status" className="mt-2 text-sm leading-relaxed text-[#5A6472]">We could not load your assessments right now.</p>
+        <button type="button" onClick={() => refetch()} disabled={isFetching} className="mt-4 self-start rounded-full border border-[#E4E7EE] px-3 py-1.5 text-sm text-[#1B2430] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B2430]">
+          {isFetching ? 'Retrying…' : 'Retry'}
         </button>
-      </GlassCard>
+      </div>
     );
   }
 
-  const score = wellnessScore(assessments[0]);
-  const prev = assessments[1] ? wellnessScore(assessments[1]) : null;
-  const delta = prev === null ? null : score - prev;
-  const circumference = 2 * Math.PI * 34;
+  const sorted = sortByCreatedAt(assessments);
+  const latest = sorted[sorted.length - 1];
+
+  if (!latest) {
+    return (
+      <div className={`${shell} items-center justify-center text-center`}>
+        <h2 className="text-sm text-[#5A6472]">Wellness reflection</h2>
+        <p className="mt-2 text-sm leading-relaxed text-[#5A6472]">Take your first assessment to see this reflection.</p>
+        <Link to="/assessment" className="mt-4 rounded-full bg-[#2E3A59] px-5 py-2.5 text-xs font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1B2430] focus-visible:ring-offset-2">Start assessment</Link>
+      </div>
+    );
+  }
+
+  const score = wellnessScore(latest);
+  const previous = sorted[sorted.length - 2];
+  const change = previous ? delta(score, wellnessScore(previous)) : null;
+  const circumference = 2 * Math.PI * 42;
 
   return (
-    <GlassCard className="flex h-full flex-col p-5">
-      <p className="text-sm text-muted-foreground">Wellness score</p>
-      <div className="mt-3 flex flex-1 items-center gap-4">
-        <div className="relative h-20 w-20">
-          <svg viewBox="0 0 80 80" className="h-20 w-20 -rotate-90">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--muted))" strokeWidth="7" />
-            <circle
-              cx="40"
-              cy="40"
-              r="34"
-              fill="none"
-              stroke="hsl(var(--sage))"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={circumference * (1 - score / 100)}
-              style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.22,1,0.36,1)' }}
-            />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center font-display text-2xl text-foreground">
-            {score}
-          </span>
-        </div>
-        <div>
-          <p className="font-display text-lg text-foreground">
-            {score >= 70 ? 'Doing well' : score >= 45 ? 'Holding steady' : 'Needs care'}
-          </p>
-          {delta !== null && (
-            <p className={`mt-1 text-xs ${delta >= 0 ? 'text-primary' : 'text-destructive'}`}>
-              {delta >= 0 ? '↑' : '↓'} {Math.abs(delta)} since last assessment
-            </p>
-          )}
-          <p className="mt-1 text-xs text-muted-foreground">
-            {new Date(assessments[0].createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}
-          </p>
-        </div>
+    <div className={`${shell} items-center justify-center text-center`}>
+      {/* ponytail: sr-only so the heading level is correct without altering the approved layout */}
+      <h2 className="sr-only">Wellness reflection</h2>
+      <div className="relative h-[120px] w-[120px]">
+        <svg viewBox="0 0 100 100" className="h-[120px] w-[120px] -rotate-90" aria-hidden="true">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#D8DEEA" strokeWidth="9" />
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#2E3A59" strokeWidth="9" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={circumference * (1 - score / 100)} />
+        </svg>
+        <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center font-display text-[34px] text-[#1B2430]">{score}</span>
+        <span className="sr-only">{score} out of 100</span>
       </div>
-    </GlassCard>
+      <h3 className="mt-3.5 font-display text-[19px] text-[#1B2430]">
+        {score >= 70 ? 'A steadier stretch' : score >= 45 ? 'A mixed stretch' : 'A heavier stretch'}
+      </h3>
+      <p className="mt-0.5 text-[13px] text-[#5A6472]">
+        {change && <span className={change.tone}><span aria-hidden="true">{change.arrow} </span>{change.text} · </span>}
+        a reflection, not a diagnosis
+      </p>
+    </div>
   );
 }

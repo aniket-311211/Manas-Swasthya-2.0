@@ -1,0 +1,205 @@
+.scrolly-story {
+  position: relative;
+  background: #091513;
+  color: #f3f0e8;
+}
+
+.scrolly-story__stage {
+  position: relative;
+  min-height: 285vh;
+}
+
+.scrolly-story__video {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #102a27;
+}
+
+.scrolly-story__video > div {
+  height: 100%;
+}
+
+.scrolly-story__video video,
+.scrolly-story__video canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrolly-story__wash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(4, 13, 12, 0.9) 0%, rgba(4, 13, 12, 0.45) 43%, rgba(4, 13, 12, 0.05) 78%),
+    linear-gradient(180deg, rgba(4, 13, 12, 0.2), rgba(4, 13, 12, 0.15) 55%, rgba(4, 13, 12, 0.7));
+}
+
+.scrolly-story__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scrolly-story__copy-inner {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(100% - 48px, 1180px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 48px 0 120px;
+}
+
+.scrolly-story__eyebrow {
+  margin: 0 0 20px;
+  color: #9be7c0;
+  font-family: 'Barlow', var(--font-body), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.scrolly-story h2 {
+  max-width: 630px;
+  margin: 0;
+  color: #f3f0e8;
+  font-family: 'Instrument Serif', var(--font-display), Georgia, serif;
+  font-size: clamp(3.8rem, 8vw, 8.8rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+}
+
+.scrolly-story__description {
+  max-width: 390px;
+  margin: 30px 0 0;
+  color: rgba(243, 240, 232, 0.74);
+  font-family: 'Barlow', var(--font-body), sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.scrolly-story__status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 28px;
+  color: rgba(243, 240, 232, 0.74);
+  font-family: 'Barlow', var(--font-body), sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.scrolly-story__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f5c574;
+  box-shadow: 0 0 0 5px rgba(245, 197, 116, 0.12);
+}
+
+.scrolly-story__dot.is-ready {
+  background: #9be7c0;
+  box-shadow: 0 0 0 5px rgba(155, 231, 192, 0.12);
+}
+
+.scrolly-story__progress {
+  position: absolute;
+  right: 28px;
+  bottom: 30px;
+  left: 28px;
+  z-index: 3;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(243, 240, 232, 0.25);
+}
+
+.scrolly-story__progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: #9be7c0;
+  transition: transform 120ms linear;
+}
+
+.scrolly-story__hint {
+  position: absolute;
+  right: 28px;
+  bottom: 56px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(243, 240, 232, 0.68);
+  font-family: 'Barlow', var(--font-body), sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scrolly-story__arrow {
+  color: #9be7c0;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .scrolly-story__stage {
+    min-height: 240vh;
+  }
+
+  .scrolly-story__copy-inner {
+    width: min(100% - 36px, 1180px);
+    padding-bottom: 100px;
+  }
+
+  .scrolly-story__wash {
+    background:
+      linear-gradient(180deg, rgba(4, 13, 12, 0.72) 0%, rgba(4, 13, 12, 0.18) 45%, rgba(4, 13, 12, 0.82) 100%),
+      linear-gradient(90deg, rgba(4, 13, 12, 0.46), transparent 85%);
+  }
+
+  .scrolly-story h2 {
+    max-width: 340px;
+    font-size: clamp(3.7rem, 18vw, 6rem);
+  }
+
+  .scrolly-story__description {
+    max-width: 300px;
+    font-size: 0.98rem;
+  }
+
+  .scrolly-story__hint {
+    right: 18px;
+    bottom: 52px;
+    font-size: 0.65rem;
+  }
+
+  .scrolly-story__progress {
+    right: 18px;
+    bottom: 27px;
+    left: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrolly-story__stage {
+    min-height: 100vh;
+  }
+
+  .scrolly-story__hint {
+    display: none;
+  }
+}

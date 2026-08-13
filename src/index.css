@@ -1,4 +1,4 @@
-@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/playfair-display';
 @import '@fontsource-variable/inter';
 
 @tailwind base;
@@ -41,7 +41,7 @@
 
     --border: 42 26% 82%;
     --input: 42 26% 82%;
-    --ring: 136 12% 43%;
+    --ring: 223 32% 27%;
 
     --radius: 1rem;
 
@@ -51,13 +51,15 @@
     --lavender: 259 28% 69%;
     --clay: 25 52% 69%;
     --canvas-deep: 42 38% 90%;
+    /* Dashboard rail surface: pale evergreen (light) / deep evergreen #102A27 (dark) */
+    --rail: 144 25% 92%;
 
     --glass: rgba(255, 255, 255, 0.62);
     --glass-border: rgba(224, 217, 200, 0.8);
     --shadow-soft: 0 8px 30px -8px rgba(62, 74, 64, 0.14);
     --shadow-lift: 0 18px 40px -12px rgba(62, 74, 64, 0.25);
 
-    --font-display: 'Fraunces Variable', Georgia, serif;
+    --font-display: 'Playfair Display Variable', Georgia, serif;
     --font-body: 'Inter Variable', system-ui, -apple-system, sans-serif;
 
     /* Therapeutic legacy aliases */
@@ -76,70 +78,15 @@
     --sidebar-ring: 136 12% 43%;
   }
 
-  .dark {
-    /* Deep forest slate (aurora) */
-    --background: 160 12% 12%;
-    --foreground: 42 42% 94%;
-
-    --card: 158 10% 17%;
-    --card-foreground: 42 42% 94%;
-
-    --popover: 158 10% 17%;
-    --popover-foreground: 42 42% 94%;
-
-    --primary: 136 21% 68%;
-    --primary-foreground: 160 13% 9%;
-    --primary-light: 135 22% 76%;
-    --primary-dark: 134 13% 55%;
-
-    --secondary: 259 18% 24%;
-    --secondary-foreground: 259 30% 88%;
-
-    --muted: 158 9% 22%;
-    --muted-foreground: 42 20% 65%;
-
-    --accent: 259 32% 78%;
-    --accent-foreground: 160 13% 9%;
-
-    --destructive: 0 62% 58%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 136 25% 60%;
-    --success-foreground: 160 13% 9%;
-    --warning: 25 60% 62%;
-    --warning-foreground: 160 13% 9%;
-
-    --border: 158 9% 28%;
-    --input: 158 9% 28%;
-    --ring: 136 21% 68%;
-
-    --sage: 136 21% 68%;
-    --sage-deep: 134 13% 55%;
-    --lavender: 259 32% 83%;
-    --clay: 27 53% 81%;
-    --canvas-deep: 160 12% 9%;
-
-    --glass: rgba(255, 255, 255, 0.11);
-    --glass-border: rgba(255, 255, 255, 0.22);
-    --shadow-soft: 0 8px 30px -8px rgba(0, 0, 0, 0.5);
-    --shadow-lift: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
-
-    --sidebar-background: 160 12% 14%;
-    --sidebar-foreground: 42 42% 94%;
-    --sidebar-primary: 136 21% 68%;
-    --sidebar-primary-foreground: 160 13% 9%;
-    --sidebar-accent: 158 9% 22%;
-    --sidebar-accent-foreground: 42 42% 94%;
-    --sidebar-border: 158 9% 28%;
-    --sidebar-ring: 136 21% 68%;
-  }
-
   * {
     @apply border-border;
   }
 
   html {
     scroll-behavior: smooth;
+    /* ponytail: `only light` (not plain `light`) — the `only` keyword is what
+       opts a page out of Chromium/Brave force-dark repainting. */
+    color-scheme: only light;
   }
 
   body {
@@ -296,6 +243,24 @@
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
+}
+
+@keyframes manasBreathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+@keyframes manasSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes manasRipple {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes discSpin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes fadeUp {

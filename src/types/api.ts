@@ -147,18 +147,130 @@ export interface NextQuestionResult {
   };
 }
 
+/**
+ * Mirrors MedicineAnalysisSchema in api/_lib/medicine.ts. The server validates
+ * against that schema before anything reaches here, so these fields are the
+ * ones that survived validation rather than the ones a model happened to send.
+ */
 export interface MedicineAiResult {
+  identified: boolean;
   name: string;
-  uses: string[];
-  dosage: { adult: string; pediatric: string };
-  sideEffects: string[];
-  warnings: string[];
+  genericName: string | null;
+  brandNames: string[];
+  activeIngredients: { name: string; strength: string | null }[];
+  form: string | null;
+  prescriptionOnly: boolean | null;
+  scheduleNote: string | null;
+
+  whatItTreats: string[];
+  howToTake: {
+    adult: string;
+    pediatric: string;
+    withFood: string | null;
+    timing: string | null;
+    courseLength: string | null;
+  };
+  missedDose: string | null;
+  storage: string | null;
+
+  commonSideEffects: string[];
+  seriousSideEffects: string[];
+  doNotTakeIf: string[];
+  interactions: string[];
+  mentalHealthNote: string | null;
+  seeADoctorIf: string[];
+
   safetyVerdict: string;
   confidence: number;
+  confidenceReason: string | null;
+}
+
+/** How many checks are left today. */
+export interface MedicineAllowance {
+  allowed: boolean;
+  remaining: number;
+  limit: number;
+  /** ISO instant of the next refill — midnight India time. */
+  resetsAt: string;
+}
+
+/**
+ * `analysis` is null when the model was not sure enough to claim an
+ * identification; `reason` says why. A null analysis still costs a check,
+ * because the model was still asked.
+ */
+export interface MedicineAnalysisResponse {
+  analysis: MedicineAiResult | null;
+  id?: string | null;
+  allowance: MedicineAllowance;
+  reason?: string;
+  dosingWithheld?: boolean;
 }
 
 export interface AnalyzeResult {
   sentiment: 'positive' | 'neutral' | 'mixed' | 'negative';
   themes: string[];
   gentleSuggestion: string;
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  mentorId: string;
+  mentorName: string;
+  mode: 'video' | 'audio' | 'chat' | 'in_person';
+  scheduledAt: string;
+  durationMin: number;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  note: string | null;
+  feePaise: number;
+  feeWaived: boolean;
+  waiverReason: 'coupon' | 'student' | null;
+  couponCode: string | null;
+  registrationNo: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CommunityMessage {
+  id: string;
+  roomId: string | null;
+  content: string;
+  timestamp: string;
+  isMentor: boolean;
+  authorName: string;
+  badge: string | null;
+}
+
+export interface MentorIdentity {
+  id: string;
+  name: string;
+  email: string;
+  specialization: string | null;
+  badge: string | null;
+}
+
+export interface MentorSession {
+  token: string;
+  expiresAt: string;
+  mentor: MentorIdentity;
+}
+
+export interface MentorThread {
+  id: string;
+  status: string;
+  updatedAt: string;
+  lastMessage: string | null;
+  lastAt: string;
+  mentor: { id: string; name: string; badge: string | null; specialization: string | null } | null;
+  student: { id: string; name: string } | null;
+}
+
+export interface ThreadMessage {
+  id: string;
+  content: string;
+  timestamp: string;
+  isMentor: boolean;
+  authorName: string;
+  badge: string | null;
 }

@@ -34,8 +34,26 @@ describe('api handlers (live db)', () => {
 
   it('users POST rejects invalid body with 422', async () => {
     const { res, captured } = mockRes();
-    await users(mockReq({ method: 'POST', body: { email: 'not-an-email' } }), res);
+    await users(
+      mockReq({
+        method: 'POST',
+        body: { email: 'not-an-email' },
+        headers: { authorization: 'Bearer test:TEST_validation_only' },
+      }),
+      res,
+    );
     expect(captured.statusCode).toBe(422);
+  });
+
+  it('users POST refuses an unauthenticated caller', async () => {
+    // This endpoint used to take clerkId AND email from the body and trust
+    // both, which made it an account-takeover primitive.
+    const { res, captured } = mockRes();
+    await users(
+      mockReq({ method: 'POST', body: { clerkId: 'anything', email: 'a@b.com' }, auth: false }),
+      res,
+    );
+    expect(captured.statusCode).toBe(401);
   });
 
   it('users POST upserts, mood POST saves, mood GET returns entry', async () => {
@@ -62,9 +80,17 @@ describe('api handlers (live db)', () => {
     expect(list.some((e) => e.notes === 'test entry')).toBe(true);
   });
 
-  it('mood GET without clerkId fails 422', async () => {
+  it('mood GET without a token fails 401', async () => {
     const { res, captured } = mockRes();
     await mood(mockReq({ method: 'GET' }), res);
-    expect(captured.statusCode).toBe(422);
+    expect(captured.statusCode).toBe(401);
+  });
+
+  it('mood GET ignores a clerkId aimed at someone else', async () => {
+    // Ninety days of another student's mood notes used to be one query
+    // parameter away.
+    const { res, captured } = mockRes();
+    await mood(mockReq({ method: 'GET', query: { clerkId: TEST_CLERK_ID }, auth: false }), res);
+    expect(captured.statusCode).toBe(401);
   });
 });

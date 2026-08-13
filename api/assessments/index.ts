@@ -1,17 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../_lib/prisma';
-import { ok, fail, parseBody, methodGuard, queryStr, withErrors } from '../_lib/http';
+import { ok, parseBody, methodGuard, withErrors } from '../_lib/http';
 import { AssessmentSave } from '../_lib/schemas';
-import { requireUser } from '../_lib/users';
+import { requireVerifiedUser } from '../_lib/clerkAuth';
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!methodGuard(req, res, ['GET', 'POST'])) return;
   await withErrors(res, async () => {
+    // Identity comes from the verified Clerk token, never from the request.
+    // A `clerkId` in the body or query is a claim anyone can make; this file
+    // used to believe it, which handed out anyone's stress, anxiety and sleep scores to whoever asked.
+    const user = await requireVerifiedUser(req, res);
+    if (!user) return;
+
     if (req.method === 'POST') {
       const body = parseBody(req, res, AssessmentSave);
       if (!body) return;
-      const user = await requireUser(body.clerkId);
       const assessment = await prisma.assessment.create({
         data: {
           userId: user.id,
@@ -24,16 +29,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         },
       });
       ok(res, assessment, 201);
-      return;
-    }
-    const clerkId = queryStr(req, 'clerkId');
-    if (!clerkId) {
-      fail(res, 'clerkId query parameter required', 422);
-      return;
-    }
-    const user = await prisma.user.findUnique({ where: { clerkId } });
-    if (!user) {
-      ok(res, []);
       return;
     }
     const assessments = await prisma.assessment.findMany({

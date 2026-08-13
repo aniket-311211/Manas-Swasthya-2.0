@@ -15,7 +15,7 @@ module.exports = {
         },
         extend: {
             fontFamily: {
-                display: ["'Fraunces Variable'", "Georgia", "serif"],
+                display: ["'Playfair Display Variable'", "Georgia", "serif"],
                 body: ["'Inter Variable'", "system-ui", "sans-serif"],
             },
             colors: {

@@ -98,6 +98,16 @@ export const isPWAInstalled = (): boolean => {
   return false;
 };
 
+/**
+ * Not in lib.dom — `beforeinstallprompt` is a Chromium extension to the spec,
+ * so the type has to be declared rather than imported.
+ */
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+  prompt(): Promise<void>;
+}
+
 export const getInstallPrompt = (): Promise<BeforeInstallPromptEvent | null> => {
   return new Promise((resolve) => {
     const handleBeforeInstallPrompt = (e: Event) => {
